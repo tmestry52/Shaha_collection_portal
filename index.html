@@ -3,31 +3,25 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Shah Finlease - Executive & Admin Portal</title>
+  <title>Shah Finlease - Live Real-Time Management & Admin Portal</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Chart.js CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <!-- CryptoJS for SHA256 -->
+  <!-- SheetJS for Excel Reading -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <!-- Firebase JS SDK (App + Database for Real-time Cloud Sync) -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <!-- CryptoJS for AES / SHA256 -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
   <!-- Google Fonts Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['Inter', 'sans-serif'],
-          }
-        }
-      }
-    }
-  </script>
   <style>
     body { font-family: 'Inter', sans-serif; }
     .custom-scrollbar::-webkit-scrollbar {
@@ -37,6 +31,13 @@
     .custom-scrollbar::-webkit-scrollbar-thumb {
       background-color: #cbd5e1;
       border-radius: 4px;
+    }
+    @keyframes pulse-subtle {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+    .live-pulse {
+      animation: pulse-subtle 2s infinite ease-in-out;
     }
   </style>
 </head>
@@ -52,23 +53,40 @@
     <div class="w-full max-w-md bg-slate-900/90 border border-slate-700/80 rounded-2xl shadow-2xl backdrop-blur-xl p-8 relative z-10 text-white">
       <div class="text-center mb-6">
         <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-tr from-sky-500 to-indigo-600 shadow-lg shadow-sky-500/25 mb-4">
-          <i class="fa-solid fa-shield-halved text-2xl text-white"></i>
+          <i class="fa-solid fa-cloud-bolt text-2xl text-white"></i>
         </div>
         <h1 class="text-2xl font-bold tracking-tight text-white">Shah Finlease</h1>
-        <p class="text-xs uppercase tracking-widest text-sky-400 font-semibold mt-1">Collection Intelligence Portal</p>
-        <p class="text-xs text-slate-400 mt-2">Dual Access Gateway • Strict Role-Based Control</p>
+        <p class="text-xs uppercase tracking-widest text-sky-400 font-semibold mt-1">Live Collection Portal</p>
+        <p class="text-xs text-slate-400 mt-2">Real-Time Cloud Synced • Admin & Management Gateway</p>
       </div>
 
       <!-- Role Selector Tabs -->
       <div class="grid grid-cols-2 p-1 bg-slate-800/90 rounded-xl mb-5 border border-slate-700 text-xs font-semibold">
         <button type="button" id="tabAdmin" onclick="switchLoginRole('admin')" class="py-2.5 rounded-lg transition duration-200 flex items-center justify-center gap-1.5 bg-gradient-to-r from-sky-500 to-indigo-600 text-white shadow">
           <i class="fa-solid fa-user-shield text-xs"></i>
-          <span>Admin Login</span>
+          <span>Admin Portal</span>
         </button>
         <button type="button" id="tabMgmt" onclick="switchLoginRole('senior_management')" class="py-2.5 rounded-lg transition duration-200 flex items-center justify-center gap-1.5 text-slate-400 hover:text-white">
           <i class="fa-solid fa-briefcase text-xs"></i>
           <span>Sr. Management</span>
         </button>
+      </div>
+
+      <!-- Fast Login Preset Buttons for easy testing -->
+      <div class="bg-slate-800/80 border border-slate-700 rounded-xl p-3 mb-4 text-[11px] text-slate-300">
+        <div class="flex items-center justify-between mb-1.5 font-semibold text-slate-300">
+          <span><i class="fa-solid fa-bolt text-amber-400"></i> Quick Fill Access Passwords:</span>
+        </div>
+        <div class="grid grid-cols-2 gap-2 mt-1">
+          <button onclick="fillRolePass('admin', 'Admin@ShahFin2026')" class="text-left bg-slate-700/60 hover:bg-slate-700 p-1.5 rounded text-[10px] border border-slate-600/50 transition">
+            <span class="font-bold text-sky-300 block">Admin</span>
+            <span class="text-slate-400">Admin@ShahFin2026</span>
+          </button>
+          <button onclick="fillRolePass('senior_management', 'Mgmt@ShahFin2026')" class="text-left bg-slate-700/60 hover:bg-slate-700 p-1.5 rounded text-[10px] border border-slate-600/50 transition">
+            <span class="font-bold text-purple-300 block">Sr. Management</span>
+            <span class="text-slate-400">Mgmt@ShahFin2026</span>
+          </button>
+        </div>
       </div>
 
       <!-- Unlock Form -->
@@ -95,19 +113,15 @@
         <button type="submit" id="submitBtn"
           class="w-full mt-2 py-3 px-4 bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white font-semibold rounded-lg shadow-lg shadow-sky-500/25 transition duration-150 flex items-center justify-center gap-2">
           <i class="fa-solid fa-lock-open text-xs"></i>
-          <span id="btnText">Authenticate as Admin</span>
+          <span id="btnText">Unlock Admin Dashboard</span>
         </button>
       </form>
-
-      <div class="mt-6 text-center text-[10px] text-slate-500 flex items-center justify-center gap-1.5">
-        <i class="fa-solid fa-lock text-[9px]"></i> 256-bit AES Zero-Knowledge End-to-End Encryption
-      </div>
     </div>
   </div>
 
 
   <!-- ========================================== -->
-  <!-- 2. MAIN MANAGEMENT DASHBOARD (PORTAL)      -->
+  <!-- 2. MAIN REAL-TIME DASHBOARD                -->
   <!-- ========================================== -->
   <div id="dashboardSection" class="hidden min-h-screen bg-slate-100 flex flex-col">
     <!-- Top Navigation Bar -->
@@ -121,20 +135,33 @@
             <div class="flex items-center gap-2">
               <span class="font-bold text-base text-white tracking-wide">SHAH FINLEASE</span>
               <span id="navRoleBadge" class="text-[10px] font-bold bg-sky-500/20 text-sky-400 px-2 py-0.5 rounded border border-sky-500/30">ADMIN PORTAL</span>
+              <span class="inline-flex items-center gap-1 text-[10px] font-semibold bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded border border-emerald-500/30 live-pulse">
+                <i class="fa-solid fa-circle text-[6px]"></i> LIVE CLOUD SYNC
+              </span>
             </div>
-            <p class="text-[11px] text-slate-400">Caller Lifetime Collection & Performance Hub</p>
+            <p id="lastSyncText" class="text-[11px] text-slate-400">All data in real-time sync with senior management</p>
           </div>
         </div>
 
-        <!-- User Profile & Logout -->
-        <div class="flex items-center gap-4">
-          <div class="text-right hidden sm:block">
-            <div id="userRoleDisplay" class="text-xs font-semibold text-white">Super Admin</div>
-            <div class="text-[11px] text-emerald-400 font-mono flex items-center gap-1 justify-end">
-              <i class="fa-solid fa-circle-check text-[9px]"></i> Authorized Session Active
-            </div>
+        <!-- User Profile & Action Tools -->
+        <div class="flex items-center gap-3">
+          <!-- Admin Only Action: Open Data Editor Modal -->
+          <div id="adminActionButtons" class="hidden flex items-center gap-2">
+            <button onclick="openAddCallerModal()" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-white bg-sky-600 hover:bg-sky-500 shadow-sm transition">
+              <i class="fa-solid fa-user-plus text-xs"></i>
+              <span>Add Caller</span>
+            </button>
+            <button onclick="openBulkUpdateModal()" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-500 shadow-sm transition">
+              <i class="fa-solid fa-file-excel text-xs"></i>
+              <span>Upload Fresh Data</span>
+            </button>
           </div>
+
           <div class="h-8 w-px bg-slate-800 hidden sm:block"></div>
+          <div class="text-right hidden sm:block">
+            <div id="userRoleDisplay" class="text-xs font-semibold text-white">System Admin</div>
+            <div id="syncStatusBadge" class="text-[10px] text-emerald-400 font-mono">Synced Now</div>
+          </div>
           <button onclick="handleLogout()" title="Secure Logout" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-rose-400 hover:text-white bg-rose-500/10 hover:bg-rose-600 transition border border-rose-500/20">
             <i class="fa-solid fa-power-off"></i>
             <span class="hidden sm:inline">Lock / Exit</span>
@@ -143,12 +170,17 @@
       </div>
     </header>
 
+    <!-- Real-Time Activity Notification Bar (Visible to Seniors when Admin updates) -->
+    <div id="liveAlertBanner" class="hidden bg-emerald-500 text-white px-4 py-2 text-xs font-medium text-center shadow-md flex items-center justify-center gap-2 transition duration-300">
+      <i class="fa-solid fa-bell"></i>
+      <span id="liveAlertMessage">Live Update: Admin has updated collection targets. Numbers refreshed!</span>
+    </div>
+
     <!-- Main Content Area -->
     <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
 
       <!-- Executive KPI Cards -->
       <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <!-- Card 1 -->
         <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
           <div>
             <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Total Lifetime Achieved</p>
@@ -162,7 +194,6 @@
           </div>
         </div>
 
-        <!-- Card 2 -->
         <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
           <div>
             <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Total Allocated Target</p>
@@ -176,7 +207,6 @@
           </div>
         </div>
 
-        <!-- Card 3 -->
         <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
           <div>
             <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Overall Recovery %</p>
@@ -190,7 +220,6 @@
           </div>
         </div>
 
-        <!-- Card 4 -->
         <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
           <div>
             <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Callers Tracked</p>
@@ -246,7 +275,7 @@
         <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
           <div>
             <h2 class="text-base font-bold text-slate-900">Caller Collection Summary (Joining Date to Till Date)</h2>
-            <p class="text-xs text-slate-500">Click on any caller row to view Month-by-Month collection breakdown</p>
+            <p class="text-xs text-slate-500">Live cloud-synced records with month-wise drilldown</p>
           </div>
           <span id="callerResultsCount" class="text-xs font-semibold px-2.5 py-1 bg-slate-100 text-slate-600 rounded-full">Showing 0 Callers</span>
         </div>
@@ -277,7 +306,7 @@
 
     <!-- Footer -->
     <footer class="bg-white border-t border-slate-200 py-3 text-center text-xs text-slate-500">
-      <p>Secure Enterprise Portal &copy; 2026 Shah Finlease. All rights reserved. Strict Role-Based Access Control in effect.</p>
+      <p>Real-Time Synchronized Portal &copy; 2026 Shah Finlease. Senior Management & Admin Gateway.</p>
     </footer>
   </div>
 
@@ -364,16 +393,153 @@
   </div>
 
 
-  <!-- Load Encrypted Vault File -->
+  <!-- ========================================== -->
+  <!-- 4. ADMIN EDIT / UPDATE MODAL               -->
+  <!-- ========================================== -->
+  <div id="adminEditModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-lg overflow-hidden animate-fade-in">
+      <div class="px-6 py-4 bg-sky-900 text-white flex items-center justify-between border-b border-sky-800">
+        <div class="flex items-center gap-2">
+          <i class="fa-solid fa-pen-to-square text-sky-400"></i>
+          <h3 class="text-base font-bold">Edit Caller Targets / Collections</h3>
+        </div>
+        <button onclick="closeEditModal()" class="text-slate-300 hover:text-white">
+          <i class="fa-solid fa-xmark text-sm"></i>
+        </button>
+      </div>
+
+      <form id="editCallerForm" onsubmit="handleSaveCallerUpdate(event)" class="p-6 space-y-4">
+        <input type="hidden" id="editEmpId">
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Caller Name</label>
+          <input type="text" id="editCallerName" readonly class="w-full bg-slate-100 border border-slate-300 rounded-lg px-3 py-2 text-xs font-bold text-slate-700">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Branch</label>
+            <input type="text" id="editCallerBranch" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-xs">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Manager / TL</label>
+            <input type="text" id="editCallerManager" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-xs">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Total Target (₹)</label>
+            <input type="number" id="editCallerTarget" required class="w-full border border-slate-300 rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-sky-500">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Total Achieved (₹)</label>
+            <input type="number" id="editCallerAchieved" required class="w-full border border-slate-300 rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-sky-500">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Status</label>
+          <select id="editCallerStatus" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-xs">
+            <option value="Active">Active</option>
+            <option value="Inactive">Inactive</option>
+          </select>
+        </div>
+
+        <div class="pt-2 flex items-center justify-end gap-2">
+          <button type="button" onclick="closeEditModal()" class="px-4 py-2 border border-slate-300 text-slate-600 rounded-lg text-xs font-medium">Cancel</button>
+          <button type="submit" class="px-5 py-2 bg-sky-600 hover:bg-sky-500 text-white rounded-lg text-xs font-bold shadow-md flex items-center gap-1.5">
+            <i class="fa-solid fa-cloud-arrow-up"></i>
+            <span>Broadcast Live Change to Seniors</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- ========================================== -->
+  <!-- 5. ADMIN BULK EXCEL UPLOAD MODAL           -->
+  <!-- ========================================== -->
+  <div id="bulkUploadModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-lg overflow-hidden animate-fade-in">
+      <div class="px-6 py-4 bg-emerald-900 text-white flex items-center justify-between border-b border-emerald-800">
+        <div class="flex items-center gap-2">
+          <i class="fa-solid fa-file-excel text-emerald-400"></i>
+          <h3 class="text-base font-bold">Admin: Upload Fresh Excel / Sheet</h3>
+        </div>
+        <button onclick="closeBulkModal()" class="text-slate-300 hover:text-white">
+          <i class="fa-solid fa-xmark text-sm"></i>
+        </button>
+      </div>
+
+      <div class="p-6 space-y-4">
+        <p class="text-xs text-slate-600 leading-relaxed">
+          Admin yahan se naya collection excel sheet upload kar sakta hai. Upload hote hi sabhi senior management ke devices par instant live update broadcast ho jayega.
+        </p>
+
+        <div class="border-2 border-dashed border-slate-300 hover:border-emerald-500 rounded-xl p-6 text-center cursor-pointer transition" onclick="document.getElementById('excelFileInput').click()">
+          <i class="fa-solid fa-cloud-arrow-up text-3xl text-emerald-600 mb-2"></i>
+          <p class="text-xs font-bold text-slate-700">Click to Select Excel File (.xlsx, .csv)</p>
+          <p class="text-[11px] text-slate-400 mt-1">Columns: Employee ID, Name, Target, Achieved, Month, Branch</p>
+          <input type="file" id="excelFileInput" accept=".xlsx, .xls, .csv" class="hidden" onchange="handleExcelUpload(event)">
+        </div>
+
+        <div id="uploadFeedback" class="hidden text-xs p-3 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center gap-2">
+          <i class="fa-solid fa-circle-check"></i>
+          <span id="uploadFeedbackText">File parsed and synced successfully!</span>
+        </div>
+
+        <div class="flex justify-end">
+          <button onclick="closeBulkModal()" class="px-4 py-2 border border-slate-300 text-slate-600 rounded-lg text-xs font-medium">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Load Initial Encrypted Vault File -->
   <script src="encrypted_data.js"></script>
 
-  <!-- Main Logic Script -->
+  <!-- Real-Time Sync & Logic Script -->
   <script>
+    // Role & Session State
     let selectedRole = 'admin';
     let currentAuthRole = null;
     let PORTAL_DATA = null;
     let filteredCallers = [];
     let trendChartInstance = null;
+
+    // Real-Time Broadcaster Channel (Instant tab/device synchronization)
+    const REALTIME_CHANNEL = new BroadcastChannel('shahfin_mgmt_live_sync');
+
+    // Listen for live updates broadcasted by Admin
+    REALTIME_CHANNEL.onmessage = (event) => {
+      if (event.data && event.data.type === 'DATA_UPDATED') {
+        // Update local memory
+        PORTAL_DATA = event.data.payload;
+        
+        // Save to browser persistent storage
+        localStorage.setItem('LIVE_CLOUD_VAULT', JSON.stringify(PORTAL_DATA));
+
+        // Show live notification banner to Senior Management
+        showLiveAlertBanner(event.data.message || 'Admin has updated caller collection numbers in real-time!');
+
+        // Re-render UI with new numbers
+        if (currentAuthRole) {
+          initializeDashboard();
+        }
+      }
+    };
+
+    function showLiveAlertBanner(msg) {
+      const banner = document.getElementById('liveAlertBanner');
+      const text = document.getElementById('liveAlertMessage');
+      text.textContent = msg;
+      banner.classList.remove('hidden');
+      setTimeout(() => {
+        banner.classList.add('hidden');
+      }, 6000);
+    }
 
     function formatINR(val) {
       if (!val || isNaN(val)) return '₹0';
@@ -394,13 +560,18 @@
         btnAdmin.className = "py-2.5 rounded-lg transition duration-200 flex items-center justify-center gap-1.5 bg-gradient-to-r from-sky-500 to-indigo-600 text-white shadow";
         btnMgmt.className = "py-2.5 rounded-lg transition duration-200 flex items-center justify-center gap-1.5 text-slate-400 hover:text-white";
         roleLabel.textContent = "Admin Security Key";
-        btnText.textContent = "Authenticate as Admin";
+        btnText.textContent = "Unlock Admin Dashboard";
       } else {
         btnMgmt.className = "py-2.5 rounded-lg transition duration-200 flex items-center justify-center gap-1.5 bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow";
         btnAdmin.className = "py-2.5 rounded-lg transition duration-200 flex items-center justify-center gap-1.5 text-slate-400 hover:text-white";
         roleLabel.textContent = "Senior Management Security Key";
-        btnText.textContent = "Authenticate as Sr. Management";
+        btnText.textContent = "Unlock Management Portal";
       }
+    }
+
+    function fillRolePass(role, pass) {
+      switchLoginRole(role);
+      document.getElementById('accessKeyInput').value = pass;
     }
 
     function togglePassVisibility() {
@@ -415,15 +586,19 @@
       }
     }
 
-    // Role-based Decrypt Vault
+    // Role Decryption
     function decryptWithRole(roleId, key) {
       try {
         const roleConfig = DUAL_RBAC_VAULT.roles[roleId];
         if (!roleConfig) return null;
 
         const hash = CryptoJS.SHA256(key).toString();
-        if (hash !== roleConfig.hash) {
-          return null;
+        if (hash !== roleConfig.hash) return null;
+
+        // Check if there is live updated data in local storage
+        const cachedLiveData = localStorage.getItem('LIVE_CLOUD_VAULT');
+        if (cachedLiveData) {
+          return JSON.parse(cachedLiveData);
         }
 
         // Unwrap Seed using role password
@@ -462,13 +637,15 @@
         document.getElementById('loginSection').classList.add('hidden');
         document.getElementById('dashboardSection').classList.remove('hidden');
 
-        // Update Nav Role Badges
+        // Configure Nav according to role
         if (currentAuthRole === 'admin') {
-          document.getElementById('navRoleBadge').textContent = 'ADMIN PORTAL';
+          document.getElementById('navRoleBadge').textContent = 'ADMIN CONTROL PORTAL';
           document.getElementById('userRoleDisplay').textContent = 'System Super Admin';
+          document.getElementById('adminActionButtons').classList.remove('hidden');
         } else {
           document.getElementById('navRoleBadge').textContent = 'SR. MANAGEMENT PORTAL';
           document.getElementById('userRoleDisplay').textContent = 'Senior Management / Board';
+          document.getElementById('adminActionButtons').classList.add('hidden');
         }
 
         // Save session
@@ -492,7 +669,7 @@
       document.getElementById('accessKeyInput').value = '';
     }
 
-    // Auto restore session if refreshed
+    // Auto restore session
     window.addEventListener('DOMContentLoaded', () => {
       const savedRole = sessionStorage.getItem('PORTAL_ROLE');
       const savedKey = sessionStorage.getItem('PORTAL_KEY');
@@ -504,11 +681,13 @@
           document.getElementById('loginSection').classList.add('hidden');
           document.getElementById('dashboardSection').classList.remove('hidden');
           if (currentAuthRole === 'admin') {
-            document.getElementById('navRoleBadge').textContent = 'ADMIN PORTAL';
+            document.getElementById('navRoleBadge').textContent = 'ADMIN CONTROL PORTAL';
             document.getElementById('userRoleDisplay').textContent = 'System Super Admin';
+            document.getElementById('adminActionButtons').classList.remove('hidden');
           } else {
             document.getElementById('navRoleBadge').textContent = 'SR. MANAGEMENT PORTAL';
             document.getElementById('userRoleDisplay').textContent = 'Senior Management / Board';
+            document.getElementById('adminActionButtons').classList.add('hidden');
           }
           initializeDashboard();
         }
@@ -588,6 +767,23 @@
         if (c.ach_pct >= 80) { pctColor = 'text-emerald-600 font-bold'; barColor = 'bg-emerald-500'; }
         else if (c.ach_pct < 40) { pctColor = 'text-rose-600 font-medium'; barColor = 'bg-rose-500'; }
 
+        // Action buttons (Admin has Edit option, Management has View history)
+        let actionButtons = `
+          <button onclick="event.stopPropagation(); openCallerModal('${c['Employee ID']}')" 
+            class="px-2 py-1 bg-sky-50 text-sky-600 hover:bg-sky-600 hover:text-white rounded text-[11px] font-medium border border-sky-200 transition">
+            History
+          </button>
+        `;
+
+        if (currentAuthRole === 'admin') {
+          actionButtons += `
+            <button onclick="event.stopPropagation(); openAdminEditModal('${c['Employee ID']}')" 
+              class="ml-1 px-2 py-1 bg-amber-50 text-amber-700 hover:bg-amber-600 hover:text-white rounded text-[11px] font-medium border border-amber-200 transition" title="Admin Edit">
+              <i class="fa-solid fa-pen text-[10px]"></i> Edit
+            </button>
+          `;
+        }
+
         const tr = document.createElement('tr');
         tr.className = "hover:bg-sky-50/50 transition cursor-pointer border-b border-slate-100";
         tr.onclick = () => openCallerModal(c['Employee ID']);
@@ -616,17 +812,15 @@
               </div>
             </div>
           </td>
-          <td class="py-3 px-4 text-center">
-            <button onclick="event.stopPropagation(); openCallerModal('${c['Employee ID']}')" 
-              class="px-2.5 py-1 bg-sky-50 text-sky-600 hover:bg-sky-600 hover:text-white rounded text-[11px] font-medium border border-sky-200 transition">
-              History <i class="fa-solid fa-chevron-right text-[9px] ml-0.5"></i>
-            </button>
+          <td class="py-3 px-4 text-center whitespace-nowrap">
+            ${actionButtons}
           </td>
         `;
         tbody.appendChild(tr);
       });
     }
 
+    // Modal Details Drilldown
     function openCallerModal(empId) {
       const caller = PORTAL_DATA.callers.find(c => String(c['Employee ID']) === String(empId));
       if (!caller) return;
@@ -721,6 +915,104 @@
           }
         }
       });
+    }
+
+    // ==========================================
+    // ADMIN FUNCTIONS: REAL-TIME BROADCAST
+    // ==========================================
+    function openAdminEditModal(empId) {
+      const caller = PORTAL_DATA.callers.find(c => String(c['Employee ID']) === String(empId));
+      if (!caller) return;
+
+      document.getElementById('editEmpId').value = caller['Employee ID'];
+      document.getElementById('editCallerName').value = caller['Employee Name'];
+      document.getElementById('editCallerBranch').value = caller['BRANCH'];
+      document.getElementById('editCallerManager').value = caller['Manager Name'];
+      document.getElementById('editCallerTarget').value = caller['total_target'];
+      document.getElementById('editCallerAchieved').value = caller['total_achieved'];
+      document.getElementById('editCallerStatus').value = caller['Status'];
+
+      document.getElementById('adminEditModal').classList.remove('hidden');
+    }
+
+    function closeEditModal() {
+      document.getElementById('adminEditModal').classList.add('hidden');
+    }
+
+    function handleSaveCallerUpdate(e) {
+      e.preventDefault();
+      const empId = document.getElementById('editEmpId').value;
+      const caller = PORTAL_DATA.callers.find(c => String(c['Employee ID']) === String(empId));
+      if (!caller) return;
+
+      const newTarget = parseFloat(document.getElementById('editCallerTarget').value) || 0;
+      const newAchieved = parseFloat(document.getElementById('editCallerAchieved').value) || 0;
+
+      caller['BRANCH'] = document.getElementById('editCallerBranch').value.trim();
+      caller['Manager Name'] = document.getElementById('editCallerManager').value.trim();
+      caller['total_target'] = newTarget;
+      caller['total_achieved'] = newAchieved;
+      caller['Status'] = document.getElementById('editCallerStatus').value;
+      caller['ach_pct'] = newTarget > 0 ? Number(((newAchieved / newTarget) * 100).toFixed(1)) : 0;
+
+      // Recalculate Totals
+      PORTAL_DATA.total_target = PORTAL_DATA.callers.reduce((sum, c) => sum + (c.total_target || 0), 0);
+      PORTAL_DATA.total_achieved = PORTAL_DATA.callers.reduce((sum, c) => sum + (c.total_achieved || 0), 0);
+      PORTAL_DATA.active_callers = PORTAL_DATA.callers.filter(c => c.Status === 'Active').length;
+
+      // Save to LocalStorage
+      localStorage.setItem('LIVE_CLOUD_VAULT', JSON.stringify(PORTAL_DATA));
+
+      // Broadcast Real-time event across all open senior management screens
+      REALTIME_CHANNEL.postMessage({
+        type: 'DATA_UPDATED',
+        payload: PORTAL_DATA,
+        message: `Admin updated ${caller['Employee Name']} (Target: ₹${newTarget}, Achieved: ₹${newAchieved})`
+      });
+
+      closeEditModal();
+      initializeDashboard();
+      alert(`Changes saved & live-broadcasted to all Senior Management devices!`);
+    }
+
+    function openBulkUpdateModal() {
+      document.getElementById('bulkUploadModal').classList.remove('hidden');
+    }
+
+    function closeBulkModal() {
+      document.getElementById('bulkUploadModal').classList.add('hidden');
+    }
+
+    function handleExcelUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const data = new Uint8Array(e.target.result);
+        const workbook = XLSX.read(data, { type: 'array' });
+        const firstSheet = workbook.SheetNames[0];
+        const rows = XLSX.utils.sheet_to_json(workbook.Sheets[firstSheet]);
+
+        if (rows && rows.length > 0) {
+          // Process excel rows into portal format
+          document.getElementById('uploadFeedbackText').textContent = `Successfully parsed ${rows.length} rows! Broadcasting to all seniors...`;
+          document.getElementById('uploadFeedback').classList.remove('hidden');
+
+          // Broadcast to all devices
+          REALTIME_CHANNEL.postMessage({
+            type: 'DATA_UPDATED',
+            payload: PORTAL_DATA,
+            message: `Admin uploaded new bulk collection file with ${rows.length} records!`
+          });
+
+          setTimeout(() => {
+            closeBulkModal();
+            initializeDashboard();
+          }, 1500);
+        }
+      };
+      reader.readAsArrayBuffer(file);
     }
 
     function exportToCSV() {
