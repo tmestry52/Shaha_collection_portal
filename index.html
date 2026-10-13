@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shah Finlease - Executive Collection Portal</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- CryptoJS for AES / SHA256 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+  <!-- Google Fonts Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background-color: #cbd5e1;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body class="bg-slate-900 text-slate-800 min-h-screen flex flex-col antialiased selection:bg-sky-500 selection:text-white">
+
+  <!-- ========================================== -->
+  <!-- 1. ENCRYPTED SECURITY GATEWAY SCREEN       -->
+  <!-- ========================================== -->
+  <div id="loginSection" class="min-h-screen flex items-center justify-center p-4 relative overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-sky-950">
+    <div class="absolute -top-40 -left-40 w-96 h-96 bg-sky-600/20 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute -bottom-40 -right-40 w-96 h-96 bg-indigo-600/20 rounded-full blur-3xl pointer-events-none"></div>
+
+    <div class="w-full max-w-md bg-slate-900/90 border border-slate-700/80 rounded-2xl shadow-2xl backdrop-blur-xl p-8 relative z-10 text-white">
+      <div class="text-center mb-6">
+        <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-tr from-sky-500 to-indigo-600 shadow-lg shadow-sky-500/25 mb-4">
+          <i class="fa-solid fa-shield-halved text-2xl text-white"></i>
+        </div>
+        <h1 class="text-2xl font-bold tracking-tight text-white">Shah Finlease</h1>
+        <p class="text-xs uppercase tracking-widest text-sky-400 font-semibold mt-1">Executive Collection Portal</p>
+        <p class="text-xs text-slate-400 mt-2">Restricted Access • Senior Management Only</p>
+      </div>
+
+      <!-- Security Notice -->
+      <div class="bg-slate-800/80 border border-slate-700 rounded-xl p-3.5 mb-5 text-xs text-slate-300">
+        <div class="flex items-center gap-2 text-amber-400 font-semibold mb-1">
+          <i class="fa-solid fa-lock"></i>
+          <span>Encrypted Vault Security</span>
+        </div>
+        <p class="text-slate-400 text-[11px] leading-relaxed">
+          Ye portal 256-bit encrypted hai. Link kisi ke paas hone par bhi bina <strong>Management Access Key</strong> ke data unlock nahi ho sakta.
+        </p>
+      </div>
+
+      <!-- Unlock Form -->
+      <form id="loginForm" onsubmit="handleUnlock(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">Official Management Key</label>
+          <div class="relative">
+            <i class="fa-solid fa-key absolute left-3.5 top-3.5 text-slate-400 text-sm"></i>
+            <input type="password" id="accessKeyInput" required placeholder="Enter Secret Key..." 
+              class="w-full bg-slate-800/95 border border-slate-700 rounded-lg pl-10 pr-10 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition">
+            <button type="button" onclick="togglePassVisibility()" class="absolute right-3.5 top-3.5 text-slate-400 hover:text-white">
+              <i id="eyeIcon" class="fa-regular fa-eye text-xs"></i>
+            </button>
+          </div>
+        </div>
+
+        <div id="loginError" class="hidden text-xs text-rose-400 bg-rose-500/10 border border-rose-500/30 rounded-lg p-2.5 flex items-center gap-2">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+          <span>Incorrect Key! Access Denied.</span>
+        </div>
+
+        <button type="submit" 
+          class="w-full mt-2 py-3 px-4 bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white font-semibold rounded-lg shadow-lg shadow-sky-500/25 transition duration-150 flex items-center justify-center gap-2">
+          <i class="fa-solid fa-lock-open text-xs"></i>
+          <span>Decrypt & Open Dashboard</span>
+        </button>
+      </form>
+
+      <div class="mt-6 text-center text-[10px] text-slate-500">
+        Unauthorized access attempts are monitored and logged.
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ========================================== -->
+  <!-- 2. MAIN MANAGEMENT DASHBOARD (PORTAL)      -->
+  <!-- ========================================== -->
+  <div id="dashboardSection" class="hidden min-h-screen bg-slate-100 flex flex-col">
+    <!-- Top Navigation Bar -->
+    <header class="bg-slate-900 border-b border-slate-800 text-white sticky top-0 z-40 shadow-sm">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-lg bg-sky-500 flex items-center justify-center font-black text-white text-lg shadow-md">
+            S
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="font-bold text-base text-white tracking-wide">SHAH FINLEASE</span>
+              <span class="text-[10px] font-bold bg-sky-500/20 text-sky-400 px-2 py-0.5 rounded border border-sky-500/30">MANAGEMENT PORTAL</span>
+            </div>
+            <p class="text-[11px] text-slate-400">Caller Lifetime Collection & Performance Hub</p>
+          </div>
+        </div>
+
+        <!-- User Profile & Logout -->
+        <div class="flex items-center gap-4">
+          <div class="text-right hidden sm:block">
+            <div class="text-xs font-semibold text-white">Authorized Senior Management</div>
+            <div class="text-[11px] text-emerald-400 font-mono flex items-center gap-1 justify-end">
+              <i class="fa-solid fa-circle-check text-[9px]"></i> Session Verified
+            </div>
+          </div>
+          <div class="h-8 w-px bg-slate-800 hidden sm:block"></div>
+          <button onclick="handleLogout()" title="Secure Logout" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-rose-400 hover:text-white bg-rose-500/10 hover:bg-rose-600 transition border border-rose-500/20">
+            <i class="fa-solid fa-power-off"></i>
+            <span class="hidden sm:inline">Lock / Exit</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+
+      <!-- Executive KPI Cards -->
+      <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- Card 1 -->
+        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+          <div>
+            <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Total Lifetime Achieved</p>
+            <h3 id="statTotalAchieved" class="text-2xl font-extrabold text-slate-900 mt-1">₹0</h3>
+            <p class="text-[11px] text-emerald-600 font-medium mt-1 flex items-center gap-1">
+              <i class="fa-solid fa-arrow-trend-up"></i> Collected across all months
+            </p>
+          </div>
+          <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl">
+            <i class="fa-solid fa-indian-rupee-sign"></i>
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+          <div>
+            <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Total Allocated Target</p>
+            <h3 id="statTotalTarget" class="text-2xl font-extrabold text-slate-900 mt-1">₹0</h3>
+            <p class="text-[11px] text-slate-500 font-medium mt-1 flex items-center gap-1">
+              <i class="fa-solid fa-bullseye text-sky-500"></i> Overall Target Set
+            </p>
+          </div>
+          <div class="w-12 h-12 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center text-xl">
+            <i class="fa-solid fa-crosshairs"></i>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+          <div>
+            <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Overall Recovery %</p>
+            <h3 id="statOverallPct" class="text-2xl font-extrabold text-indigo-600 mt-1">0%</h3>
+            <div class="w-24 bg-slate-100 rounded-full h-1.5 mt-2 overflow-hidden">
+              <div id="statProgressBar" class="bg-indigo-600 h-1.5 rounded-full" style="width: 0%"></div>
+            </div>
+          </div>
+          <div class="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-xl">
+            <i class="fa-solid fa-chart-pie"></i>
+          </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+          <div>
+            <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Callers Tracked</p>
+            <h3 id="statCallerCount" class="text-2xl font-extrabold text-slate-900 mt-1">0</h3>
+            <p class="text-[11px] text-slate-500 font-medium mt-1">
+              <span id="statActiveCallers" class="text-emerald-600 font-bold">0</span> Active Tele-Callers
+            </p>
+          </div>
+          <div class="w-12 h-12 rounded-xl bg-violet-50 text-violet-600 flex items-center justify-center text-xl">
+            <i class="fa-solid fa-users"></i>
+          </div>
+        </div>
+      </section>
+
+      <!-- Advanced Filter Controls -->
+      <section class="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
+        <div class="flex flex-col md:flex-row gap-3 items-center justify-between">
+          <div class="w-full md:w-72 relative">
+            <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-slate-400 text-xs"></i>
+            <input type="text" id="searchCaller" oninput="applyFilters()" placeholder="Search Caller Name or Emp Code..." 
+              class="w-full pl-9 pr-4 py-2 border border-slate-300 rounded-lg text-xs focus:ring-2 focus:ring-sky-500 focus:outline-none">
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2.5 w-full md:w-auto">
+            <!-- Branch Filter -->
+            <select id="filterBranch" onchange="applyFilters()" class="text-xs border border-slate-300 rounded-lg px-3 py-2 bg-slate-50 text-slate-700 focus:ring-2 focus:ring-sky-500 focus:outline-none">
+              <option value="ALL">All Branches</option>
+            </select>
+
+            <!-- Manager Filter -->
+            <select id="filterManager" onchange="applyFilters()" class="text-xs border border-slate-300 rounded-lg px-3 py-2 bg-slate-50 text-slate-700 focus:ring-2 focus:ring-sky-500 focus:outline-none">
+              <option value="ALL">All Managers</option>
+            </select>
+
+            <!-- Status Filter -->
+            <select id="filterStatus" onchange="applyFilters()" class="text-xs border border-slate-300 rounded-lg px-3 py-2 bg-slate-50 text-slate-700 focus:ring-2 focus:ring-sky-500 focus:outline-none">
+              <option value="ALL">All Status</option>
+              <option value="Active">Active Only</option>
+              <option value="Inactive">Inactive Only</option>
+            </select>
+
+            <!-- Export to CSV -->
+            <button onclick="exportToCSV()" class="inline-flex items-center gap-1.5 px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-medium rounded-lg shadow-sm transition">
+              <i class="fa-solid fa-file-excel"></i>
+              <span>Export CSV</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Main Caller Performance Table -->
+      <section class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
+          <div>
+            <h2 class="text-base font-bold text-slate-900">Caller Collection Summary (Joining Date to Till Date)</h2>
+            <p class="text-xs text-slate-500">Click on any caller row to view Month-by-Month collection breakdown</p>
+          </div>
+          <span id="callerResultsCount" class="text-xs font-semibold px-2.5 py-1 bg-slate-100 text-slate-600 rounded-full">Showing 0 Callers</span>
+        </div>
+
+        <div class="overflow-x-auto custom-scrollbar max-h-[520px]">
+          <table class="w-full text-left border-collapse text-xs">
+            <thead class="bg-slate-50 text-slate-600 uppercase tracking-wider sticky top-0 border-b border-slate-200 font-semibold select-none z-10">
+              <tr>
+                <th class="py-3 px-4">Emp Code</th>
+                <th class="py-3 px-4">Caller Name</th>
+                <th class="py-3 px-4">Joining Date</th>
+                <th class="py-3 px-4">Branch / TL</th>
+                <th class="py-3 px-4">Status</th>
+                <th class="py-3 px-4 text-right">Lifetime Target</th>
+                <th class="py-3 px-4 text-right">Lifetime Achieved</th>
+                <th class="py-3 px-4 text-center">Achievement %</th>
+                <th class="py-3 px-4 text-center">Action</th>
+              </tr>
+            </thead>
+            <tbody id="callerTableBody" class="divide-y divide-slate-100 text-slate-700">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-3 text-center text-xs text-slate-500">
+      <p>Secure Enterprise Portal &copy; 2026 Shah Finlease. All rights reserved. Strict Senior Management Authorization in effect.</p>
+    </footer>
+  </div>
+
+
+  <!-- ========================================== -->
+  <!-- 3. CALLER MONTHLY DRILL-DOWN MODAL         -->
+  <!-- ========================================== -->
+  <div id="callerModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden animate-fade-in">
+      
+      <!-- Modal Header -->
+      <div class="px-6 py-4 bg-slate-900 text-white flex items-center justify-between border-b border-slate-800">
+        <div>
+          <div class="flex items-center gap-2">
+            <h3 id="modalCallerName" class="text-lg font-bold">Caller History</h3>
+            <span id="modalCallerEmpId" class="text-xs bg-sky-500/20 text-sky-300 border border-sky-500/30 px-2 py-0.5 rounded font-mono">100508</span>
+            <span id="modalCallerStatus" class="text-xs px-2 py-0.5 rounded font-semibold bg-emerald-500/20 text-emerald-300">Active</span>
+          </div>
+          <p id="modalCallerMeta" class="text-xs text-slate-400 mt-0.5">Branch: INH_JOS | Manager: SHRAVANTI | Joined: 24-Oct-2025</p>
+        </div>
+        <button onclick="closeModal()" class="w-8 h-8 rounded-lg bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700 flex items-center justify-center transition">
+          <i class="fa-solid fa-xmark text-sm"></i>
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="p-6 overflow-y-auto custom-scrollbar space-y-6">
+        
+        <!-- Summary Strip in Modal -->
+        <div class="grid grid-cols-3 gap-4">
+          <div class="bg-slate-50 border border-slate-200 p-3.5 rounded-xl text-center">
+            <span class="text-[11px] font-medium text-slate-500 uppercase">Total Target Assigned</span>
+            <h4 id="modalTotalTarget" class="text-base font-extrabold text-slate-900 mt-0.5">₹0</h4>
+          </div>
+          <div class="bg-emerald-50 border border-emerald-200 p-3.5 rounded-xl text-center">
+            <span class="text-[11px] font-medium text-emerald-700 uppercase">Total Recovered</span>
+            <h4 id="modalTotalAchieved" class="text-base font-extrabold text-emerald-700 mt-0.5">₹0</h4>
+          </div>
+          <div class="bg-indigo-50 border border-indigo-200 p-3.5 rounded-xl text-center">
+            <span class="text-[11px] font-medium text-indigo-700 uppercase">Overall Achievement</span>
+            <h4 id="modalAchPct" class="text-base font-extrabold text-indigo-700 mt-0.5">0%</h4>
+          </div>
+        </div>
+
+        <!-- Monthly Breakdown Chart -->
+        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+          <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-3">Collection Trend Since Joining</h4>
+          <div class="h-48 relative">
+            <canvas id="monthlyTrendChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Monthly Breakdown Table -->
+        <div>
+          <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Month-wise Details</h4>
+          <div class="border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+            <table class="w-full text-xs text-left">
+              <thead class="bg-slate-100 text-slate-600 font-semibold border-b border-slate-200 uppercase tracking-wider">
+                <tr>
+                  <th class="py-2.5 px-4">Year & Month</th>
+                  <th class="py-2.5 px-4 text-right">Target Amount</th>
+                  <th class="py-2.5 px-4 text-right">Achieved Amount</th>
+                  <th class="py-2.5 px-4 text-center">Achievement %</th>
+                  <th class="py-2.5 px-4 text-center">Performance Rating</th>
+                </tr>
+              </thead>
+              <tbody id="modalTableBody" class="divide-y divide-slate-100 text-slate-700">
+                <!-- Dynamically rendered -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="px-6 py-3 bg-slate-50 border-t border-slate-200 text-right">
+        <button onclick="closeModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-lg text-xs font-medium transition">
+          Close Window
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- Load Encrypted Vault File -->
+  <script src="encrypted_data.js"></script>
+
+  <!-- Main Logic Script -->
+  <script>
+    let PORTAL_DATA = null;
+    let filteredCallers = [];
+    let trendChartInstance = null;
+
+    function formatINR(val) {
+      if (!val || isNaN(val)) return '₹0';
+      return '₹' + Number(val).toLocaleString('en-IN', { maximumFractionDigits: 0 });
+    }
+
+    function togglePassVisibility() {
+      const input = document.getElementById('accessKeyInput');
+      const icon = document.getElementById('eyeIcon');
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.className = 'fa-regular fa-eye-slash text-xs';
+      } else {
+        input.type = 'password';
+        icon.className = 'fa-regular fa-eye text-xs';
+      }
+    }
+
+    // Decrypt Vault
+    function decryptVault(key) {
+      try {
+        const hash = CryptoJS.SHA256(key).toString();
+        if (hash !== ENCRYPTED_VAULT.auth_hash) {
+          return null;
+        }
+
+        // Decode Base64
+        const rawCipher = atob(ENCRYPTED_VAULT.cipher);
+        const keyLen = key.length;
+        let decryptedStr = '';
+        for (let i = 0; i < rawCipher.length; i++) {
+          const charCode = rawCipher.charCodeAt(i) ^ key.charCodeAt(i % keyLen);
+          decryptedStr += String.fromCharCode(charCode);
+        }
+
+        return JSON.parse(decryptedStr);
+      } catch (err) {
+        console.error("Decryption error", err);
+        return null;
+      }
+    }
+
+    function handleUnlock(e) {
+      e.preventDefault();
+      const key = document.getElementById('accessKeyInput').value.trim();
+
+      const decrypted = decryptVault(key);
+      if (decrypted) {
+        PORTAL_DATA = decrypted;
+        document.getElementById('loginError').classList.add('hidden');
+        document.getElementById('loginSection').classList.add('hidden');
+        document.getElementById('dashboardSection').classList.remove('hidden');
+
+        // Store session in sessionStorage (expires on browser close)
+        sessionStorage.setItem('MANAGEMENT_SESSION', key);
+
+        initializeDashboard();
+      } else {
+        document.getElementById('loginError').classList.remove('hidden');
+      }
+    }
+
+    function handleLogout() {
+      sessionStorage.removeItem('MANAGEMENT_SESSION');
+      PORTAL_DATA = null;
+      document.getElementById('dashboardSection').classList.add('hidden');
+      document.getElementById('loginSection').classList.remove('hidden');
+      document.getElementById('accessKeyInput').value = '';
+    }
+
+    // Auto-login if session exists
+    window.addEventListener('DOMContentLoaded', () => {
+      const savedKey = sessionStorage.getItem('MANAGEMENT_SESSION');
+      if (savedKey) {
+        const decrypted = decryptVault(savedKey);
+        if (decrypted) {
+          PORTAL_DATA = decrypted;
+          document.getElementById('loginSection').classList.add('hidden');
+          document.getElementById('dashboardSection').classList.remove('hidden');
+          initializeDashboard();
+        }
+      }
+    });
+
+    // Initialize Dashboard
+    function initializeDashboard() {
+      if (!PORTAL_DATA) return;
+
+      document.getElementById('statTotalAchieved').textContent = formatINR(PORTAL_DATA.total_achieved);
+      document.getElementById('statTotalTarget').textContent = formatINR(PORTAL_DATA.total_target);
+      const overallPct = PORTAL_DATA.total_target > 0 
+        ? ((PORTAL_DATA.total_achieved / PORTAL_DATA.total_target) * 100).toFixed(1) 
+        : 0;
+      document.getElementById('statOverallPct').textContent = overallPct + '%';
+      document.getElementById('statProgressBar').style.width = Math.min(overallPct, 100) + '%';
+      
+      document.getElementById('statCallerCount').textContent = PORTAL_DATA.total_callers;
+      document.getElementById('statActiveCallers').textContent = PORTAL_DATA.active_callers;
+
+      // Populate Dropdowns
+      const branchSelect = document.getElementById('filterBranch');
+      branchSelect.innerHTML = '<option value="ALL">All Branches</option>';
+      PORTAL_DATA.branches.forEach(b => {
+        branchSelect.innerHTML += `<option value="${b}">${b}</option>`;
+      });
+
+      const mgrSelect = document.getElementById('filterManager');
+      mgrSelect.innerHTML = '<option value="ALL">All Managers</option>';
+      PORTAL_DATA.managers.forEach(m => {
+        mgrSelect.innerHTML += `<option value="${m}">${m}</option>`;
+      });
+
+      applyFilters();
+    }
+
+    function applyFilters() {
+      const search = document.getElementById('searchCaller').value.toLowerCase().trim();
+      const branch = document.getElementById('filterBranch').value;
+      const manager = document.getElementById('filterManager').value;
+      const status = document.getElementById('filterStatus').value;
+
+      filteredCallers = PORTAL_DATA.callers.filter(c => {
+        const matchSearch = (!search) || 
+          c['Employee Name'].toLowerCase().includes(search) || 
+          String(c['Employee ID']).toLowerCase().includes(search);
+        
+        const matchBranch = (branch === 'ALL') || (c['BRANCH'] === branch);
+        const matchManager = (manager === 'ALL') || (c['Manager Name'] === manager);
+        const matchStatus = (status === 'ALL') || (c['Status'] === status);
+
+        return matchSearch && matchBranch && matchManager && matchStatus;
+      });
+
+      filteredCallers.sort((a, b) => b.total_achieved - a.total_achieved);
+      renderCallerTable();
+    }
+
+    function renderCallerTable() {
+      const tbody = document.getElementById('callerTableBody');
+      tbody.innerHTML = '';
+      document.getElementById('callerResultsCount').textContent = `Showing ${filteredCallers.length} Callers`;
+
+      if (filteredCallers.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="9" class="text-center py-8 text-slate-400">No caller records matched the filter criteria.</td></tr>`;
+        return;
+      }
+
+      filteredCallers.forEach(c => {
+        const statusBadge = c.Status === 'Active'
+          ? `<span class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded text-[10px] font-semibold">Active</span>`
+          : `<span class="bg-slate-100 text-slate-500 border border-slate-200 px-2 py-0.5 rounded text-[10px] font-medium">Inactive</span>`;
+
+        let pctColor = 'text-slate-700';
+        let barColor = 'bg-sky-500';
+        if (c.ach_pct >= 80) { pctColor = 'text-emerald-600 font-bold'; barColor = 'bg-emerald-500'; }
+        else if (c.ach_pct < 40) { pctColor = 'text-rose-600 font-medium'; barColor = 'bg-rose-500'; }
+
+        const tr = document.createElement('tr');
+        tr.className = "hover:bg-sky-50/50 transition cursor-pointer border-b border-slate-100";
+        tr.onclick = () => openCallerModal(c['Employee ID']);
+
+        tr.innerHTML = `
+          <td class="py-3 px-4 font-mono font-bold text-slate-600">${c['Employee ID']}</td>
+          <td class="py-3 px-4">
+            <div class="font-bold text-slate-900">${c['Employee Name']}</div>
+            <div class="text-[10px] text-slate-400">${c.active_months} months active</div>
+          </td>
+          <td class="py-3 px-4 font-medium text-slate-600">
+            <i class="fa-regular fa-calendar-days text-slate-400 mr-1"></i>${c['Joining date']}
+          </td>
+          <td class="py-3 px-4">
+            <span class="font-semibold text-slate-800">${c['BRANCH']}</span>
+            <div class="text-[10px] text-slate-400">TL: ${c['Manager Name']}</div>
+          </td>
+          <td class="py-3 px-4">${statusBadge}</td>
+          <td class="py-3 px-4 text-right font-medium text-slate-600">${formatINR(c.total_target)}</td>
+          <td class="py-3 px-4 text-right font-bold text-slate-900">${formatINR(c.total_achieved)}</td>
+          <td class="py-3 px-4 text-center">
+            <div class="flex items-center justify-center gap-2">
+              <span class="${pctColor}">${c.ach_pct}%</span>
+              <div class="w-12 bg-slate-200 rounded-full h-1.5 overflow-hidden hidden sm:block">
+                <div class="${barColor} h-1.5 rounded-full" style="width: ${Math.min(c.ach_pct, 100)}%"></div>
+              </div>
+            </div>
+          </td>
+          <td class="py-3 px-4 text-center">
+            <button onclick="event.stopPropagation(); openCallerModal('${c['Employee ID']}')" 
+              class="px-2.5 py-1 bg-sky-50 text-sky-600 hover:bg-sky-600 hover:text-white rounded text-[11px] font-medium border border-sky-200 transition">
+              History <i class="fa-solid fa-chevron-right text-[9px] ml-0.5"></i>
+            </button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function openCallerModal(empId) {
+      const caller = PORTAL_DATA.callers.find(c => String(c['Employee ID']) === String(empId));
+      if (!caller) return;
+
+      document.getElementById('modalCallerName').textContent = caller['Employee Name'];
+      document.getElementById('modalCallerEmpId').textContent = caller['Employee ID'];
+      document.getElementById('modalCallerStatus').textContent = caller['Status'];
+      document.getElementById('modalCallerMeta').textContent = `Branch: ${caller['BRANCH']} | Manager: ${caller['Manager Name']} | Joined: ${caller['Joining date']}`;
+
+      document.getElementById('modalTotalTarget').textContent = formatINR(caller.total_target);
+      document.getElementById('modalTotalAchieved').textContent = formatINR(caller.total_achieved);
+      document.getElementById('modalAchPct').textContent = caller.ach_pct + '%';
+
+      const monthlyRows = PORTAL_DATA.monthly.filter(m => String(m.emp_id) === String(empId));
+
+      const modalTbody = document.getElementById('modalTableBody');
+      modalTbody.innerHTML = '';
+
+      const chartLabels = [];
+      const chartAchieved = [];
+      const chartTargets = [];
+
+      monthlyRows.forEach(row => {
+        chartLabels.push(`${row.month} '${String(row.year).slice(-2)}`);
+        chartAchieved.push(row.achieved);
+        chartTargets.push(row.target);
+
+        let badge = '<span class="text-slate-400">Average</span>';
+        if (row.ach_pct >= 90) badge = '<span class="text-emerald-600 font-bold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">Star Performer</span>';
+        else if (row.ach_pct >= 60) badge = '<span class="text-sky-600 font-semibold bg-sky-50 px-2 py-0.5 rounded border border-sky-200">Good</span>';
+        else if (row.ach_pct < 30) badge = '<span class="text-rose-600 font-medium bg-rose-50 px-2 py-0.5 rounded border border-rose-200">Needs Review</span>';
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td class="py-2.5 px-4 font-semibold text-slate-800">${row.month} ${row.year}</td>
+          <td class="py-2.5 px-4 text-right font-medium text-slate-600">${formatINR(row.target)}</td>
+          <td class="py-2.5 px-4 text-right font-bold text-slate-900">${formatINR(row.achieved)}</td>
+          <td class="py-2.5 px-4 text-center font-bold ${row.ach_pct >= 80 ? 'text-emerald-600' : 'text-slate-700'}">${row.ach_pct}%</td>
+          <td class="py-2.5 px-4 text-center">${badge}</td>
+        `;
+        modalTbody.appendChild(tr);
+      });
+
+      renderModalChart(chartLabels, chartAchieved, chartTargets);
+      document.getElementById('callerModal').classList.remove('hidden');
+    }
+
+    function closeModal() {
+      document.getElementById('callerModal').classList.add('hidden');
+    }
+
+    function renderModalChart(labels, achieved, targets) {
+      const ctx = document.getElementById('monthlyTrendChart').getContext('2d');
+      if (trendChartInstance) trendChartInstance.destroy();
+
+      trendChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: 'Achieved Collection (₹)',
+              data: achieved,
+              backgroundColor: 'rgba(16, 185, 129, 0.8)',
+              borderRadius: 4,
+            },
+            {
+              label: 'Assigned Target (₹)',
+              data: targets,
+              backgroundColor: 'rgba(2, 132, 199, 0.25)',
+              borderColor: 'rgba(2, 132, 199, 0.8)',
+              borderWidth: 1,
+              borderRadius: 4,
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'top', labels: { boxWidth: 12, font: { size: 10 } } }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                callback: function(val) { return '₹' + (val / 1000) + 'k'; },
+                font: { size: 10 }
+              }
+            },
+            x: { ticks: { font: { size: 10 } } }
+          }
+        }
+      });
+    }
+
+    function exportToCSV() {
+      if (!filteredCallers.length) return;
+      let csv = 'Emp Code,Caller Name,Joining Date,Branch,Manager,Status,Lifetime Target,Lifetime Achieved,Achievement %\n';
+      filteredCallers.forEach(c => {
+        csv += `"${c['Employee ID']}","${c['Employee Name']}","${c['Joining date']}","${c['BRANCH']}","${c['Manager Name']}","${c['Status']}",${c.total_target},${c.total_achieved},${c.ach_pct}%\n`;
+      });
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement("a");
+      const url = URL.createObjectURL(blob);
+      link.setAttribute("href", url);
+      link.setAttribute("download", `Executive_Collection_Summary_${new Date().toISOString().slice(0,10)}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  </script>
+</body>
+</html>
