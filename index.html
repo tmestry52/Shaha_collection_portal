@@ -3,27 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Shah Finlease - Live Real-Time Management & Admin Portal</title>
+  <title>Shah Finlease - Live Executive Collection Portal</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Chart.js CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <!-- SheetJS for Excel Reading -->
-  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-  <!-- Firebase JS SDK (App + Database for Real-time Cloud Sync) -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-  <!-- CryptoJS for AES / SHA256 -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
   <!-- Google Fonts Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   
   <style>
-    body { font-family: 'Inter', sans-serif; }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
     .custom-scrollbar::-webkit-scrollbar {
       width: 6px;
       height: 6px;
@@ -32,88 +25,86 @@
       background-color: #cbd5e1;
       border-radius: 4px;
     }
-    @keyframes pulse-subtle {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.6; }
+    .glow-gold {
+      box-shadow: 0 4px 20px -2px rgba(234, 88, 12, 0.25);
     }
-    .live-pulse {
-      animation: pulse-subtle 2s infinite ease-in-out;
+    .glow-card {
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
     }
   </style>
 </head>
-<body class="bg-slate-900 text-slate-800 min-h-screen flex flex-col antialiased selection:bg-sky-500 selection:text-white">
+<body class="bg-slate-900 text-slate-800 min-h-screen flex flex-col antialiased selection:bg-amber-500 selection:text-white">
 
   <!-- ========================================== -->
-  <!-- 1. DUAL LOGIN AUTHENTICATION GATEWAY       -->
+  <!-- 1. AUTHENTICATION GATEWAY (ADMIN & SENIOR) -->
   <!-- ========================================== -->
-  <div id="loginSection" class="min-h-screen flex items-center justify-center p-4 relative overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-sky-950">
-    <div class="absolute -top-40 -left-40 w-96 h-96 bg-sky-600/20 rounded-full blur-3xl pointer-events-none"></div>
-    <div class="absolute -bottom-40 -right-40 w-96 h-96 bg-indigo-600/20 rounded-full blur-3xl pointer-events-none"></div>
+  <div id="loginSection" class="min-h-screen flex items-center justify-center p-4 relative overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-amber-950/80">
+    <div class="absolute -top-40 -left-40 w-96 h-96 bg-amber-500/15 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute -bottom-40 -right-40 w-96 h-96 bg-orange-600/15 rounded-full blur-3xl pointer-events-none"></div>
 
-    <div class="w-full max-w-md bg-slate-900/90 border border-slate-700/80 rounded-2xl shadow-2xl backdrop-blur-xl p-8 relative z-10 text-white">
+    <div class="w-full max-w-md bg-slate-900/90 border border-slate-700/80 rounded-3xl shadow-2xl backdrop-blur-xl p-8 relative z-10 text-white">
       <div class="text-center mb-6">
-        <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-tr from-sky-500 to-indigo-600 shadow-lg shadow-sky-500/25 mb-4">
-          <i class="fa-solid fa-cloud-bolt text-2xl text-white"></i>
+        <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-tr from-amber-500 to-orange-600 shadow-xl shadow-amber-500/25 mb-4">
+          <i class="fa-solid fa-crown text-2xl text-white"></i>
         </div>
-        <h1 class="text-2xl font-bold tracking-tight text-white">Shah Finlease</h1>
-        <p class="text-xs uppercase tracking-widest text-sky-400 font-semibold mt-1">Live Collection Portal</p>
-        <p class="text-xs text-slate-400 mt-2">Real-Time Cloud Synced • Admin & Management Gateway</p>
+        <h1 class="text-2xl font-black tracking-tight text-white uppercase">Shah Finlease</h1>
+        <p class="text-xs uppercase tracking-widest text-amber-400 font-bold mt-1">Executive Collection Command Hub</p>
+        <p class="text-xs text-slate-400 mt-2">Authorized Leadership & Management Portal</p>
       </div>
 
       <!-- Role Selector Tabs -->
-      <div class="grid grid-cols-2 p-1 bg-slate-800/90 rounded-xl mb-5 border border-slate-700 text-xs font-semibold">
-        <button type="button" id="tabAdmin" onclick="switchLoginRole('admin')" class="py-2.5 rounded-lg transition duration-200 flex items-center justify-center gap-1.5 bg-gradient-to-r from-sky-500 to-indigo-600 text-white shadow">
+      <div class="grid grid-cols-2 p-1.5 bg-slate-800/90 rounded-2xl mb-5 border border-slate-700 text-xs font-bold">
+        <button type="button" id="tabAdmin" onclick="selectRole('admin')" class="py-2.5 rounded-xl transition duration-200 flex items-center justify-center gap-2 bg-gradient-to-r from-amber-500 to-orange-600 text-white shadow-lg">
           <i class="fa-solid fa-user-shield text-xs"></i>
           <span>Admin Portal</span>
         </button>
-        <button type="button" id="tabMgmt" onclick="switchLoginRole('senior_management')" class="py-2.5 rounded-lg transition duration-200 flex items-center justify-center gap-1.5 text-slate-400 hover:text-white">
+        <button type="button" id="tabMgmt" onclick="selectRole('senior_management')" class="py-2.5 rounded-xl transition duration-200 flex items-center justify-center gap-2 text-slate-400 hover:text-white">
           <i class="fa-solid fa-briefcase text-xs"></i>
           <span>Sr. Management</span>
         </button>
       </div>
 
-      <!-- Fast Login Preset Buttons for easy testing -->
-      <div class="bg-slate-800/80 border border-slate-700 rounded-xl p-3 mb-4 text-[11px] text-slate-300">
-        <div class="flex items-center justify-between mb-1.5 font-semibold text-slate-300">
-          <span><i class="fa-solid fa-bolt text-amber-400"></i> Quick Fill Access Passwords:</span>
+      <!-- Quick Fill Buttons -->
+      <div class="bg-slate-800/80 border border-slate-700/80 rounded-2xl p-3 mb-5 text-[11px]">
+        <div class="flex items-center gap-1.5 text-amber-400 font-bold mb-2">
+          <i class="fa-solid fa-key text-xs"></i>
+          <span>Quick 1-Click Access Passwords:</span>
         </div>
-        <div class="grid grid-cols-2 gap-2 mt-1">
-          <button onclick="fillRolePass('admin', 'Admin@ShahFin2026')" class="text-left bg-slate-700/60 hover:bg-slate-700 p-1.5 rounded text-[10px] border border-slate-600/50 transition">
-            <span class="font-bold text-sky-300 block">Admin</span>
-            <span class="text-slate-400">Admin@ShahFin2026</span>
+        <div class="grid grid-cols-2 gap-2">
+          <button type="button" onclick="quickFillPass('admin', 'Admin@ShahFin2026')" class="p-2 bg-slate-700/60 hover:bg-slate-700 rounded-xl border border-slate-600/50 text-left transition">
+            <span class="block text-amber-300 font-bold">Admin Login</span>
+            <span class="text-[10px] text-slate-400 font-mono">Admin@ShahFin2026</span>
           </button>
-          <button onclick="fillRolePass('senior_management', 'Mgmt@ShahFin2026')" class="text-left bg-slate-700/60 hover:bg-slate-700 p-1.5 rounded text-[10px] border border-slate-600/50 transition">
-            <span class="font-bold text-purple-300 block">Sr. Management</span>
-            <span class="text-slate-400">Mgmt@ShahFin2026</span>
+          <button type="button" onclick="quickFillPass('senior_management', 'Mgmt@ShahFin2026')" class="p-2 bg-slate-700/60 hover:bg-slate-700 rounded-xl border border-slate-600/50 text-left transition">
+            <span class="block text-orange-300 font-bold">Sr. Management</span>
+            <span class="text-[10px] text-slate-400 font-mono">Mgmt@ShahFin2026</span>
           </button>
         </div>
       </div>
 
-      <!-- Unlock Form -->
-      <form id="loginForm" onsubmit="handleUnlock(event)" class="space-y-4">
+      <!-- Form -->
+      <form onsubmit="handlePortalUnlock(event)" class="space-y-4">
         <div>
-          <label id="roleLabel" class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
-            Admin Security Key
-          </label>
+          <label id="roleLabelText" class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">Admin Security Key</label>
           <div class="relative">
-            <i class="fa-solid fa-key absolute left-3.5 top-3.5 text-slate-400 text-sm"></i>
-            <input type="password" id="accessKeyInput" required placeholder="Enter role security key..." 
-              class="w-full bg-slate-800/95 border border-slate-700 rounded-lg pl-10 pr-10 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition">
-            <button type="button" onclick="togglePassVisibility()" class="absolute right-3.5 top-3.5 text-slate-400 hover:text-white">
-              <i id="eyeIcon" class="fa-regular fa-eye text-xs"></i>
+            <i class="fa-solid fa-lock absolute left-3.5 top-3.5 text-slate-400 text-sm"></i>
+            <input type="password" id="authKeyInput" required placeholder="Enter key..." 
+              class="w-full bg-slate-800/95 border border-slate-700 rounded-xl pl-10 pr-10 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-500 transition">
+            <button type="button" onclick="togglePassEye()" class="absolute right-3.5 top-3.5 text-slate-400 hover:text-white">
+              <i id="authEye" class="fa-regular fa-eye text-sm"></i>
             </button>
           </div>
         </div>
 
-        <div id="loginError" class="hidden text-xs text-rose-400 bg-rose-500/10 border border-rose-500/30 rounded-lg p-2.5 flex items-center gap-2">
+        <div id="authErrorMsg" class="hidden text-xs text-rose-400 bg-rose-500/10 border border-rose-500/30 rounded-xl p-3 flex items-center gap-2">
           <i class="fa-solid fa-triangle-exclamation"></i>
-          <span id="errorMessageText">Invalid Key for selected role! Access Denied.</span>
+          <span>Invalid key for selected role. Access Denied.</span>
         </div>
 
-        <button type="submit" id="submitBtn"
-          class="w-full mt-2 py-3 px-4 bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white font-semibold rounded-lg shadow-lg shadow-sky-500/25 transition duration-150 flex items-center justify-center gap-2">
-          <i class="fa-solid fa-lock-open text-xs"></i>
-          <span id="btnText">Unlock Admin Dashboard</span>
+        <button type="submit" 
+          class="w-full mt-2 py-3.5 px-4 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-white font-extrabold rounded-xl shadow-lg shadow-amber-500/25 transition duration-150 flex items-center justify-center gap-2">
+          <i class="fa-solid fa-unlock-keyhole text-xs"></i>
+          <span id="authBtnLabel">Unlock Admin Portal</span>
         </button>
       </form>
     </div>
@@ -121,779 +112,488 @@
 
 
   <!-- ========================================== -->
-  <!-- 2. MAIN REAL-TIME DASHBOARD                -->
+  <!-- 2. MAIN ATTRACTIVE EXECUTIVE DASHBOARD     -->
   <!-- ========================================== -->
-  <div id="dashboardSection" class="hidden min-h-screen bg-slate-100 flex flex-col">
-    <!-- Top Navigation Bar -->
-    <header class="bg-slate-900 border-b border-slate-800 text-white sticky top-0 z-40 shadow-sm">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        <div class="flex items-center gap-3">
-          <div class="w-9 h-9 rounded-lg bg-sky-500 flex items-center justify-center font-black text-white text-lg shadow-md">
-            S
+  <div id="dashboardSection" class="hidden min-h-screen bg-slate-50 flex flex-col">
+    
+    <!-- Top Corporate Header -->
+    <header class="bg-slate-900 border-b border-slate-800 text-white sticky top-0 z-40 shadow-md">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 py-3 flex items-center justify-between">
+        
+        <!-- Logo & Branding -->
+        <div class="flex items-center gap-3.5">
+          <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-amber-500 to-orange-600 flex items-center justify-center font-black text-white text-xl shadow-lg shadow-amber-500/30">
+            <i class="fa-solid fa-crown text-base"></i>
           </div>
           <div>
             <div class="flex items-center gap-2">
-              <span class="font-bold text-base text-white tracking-wide">SHAH FINLEASE</span>
-              <span id="navRoleBadge" class="text-[10px] font-bold bg-sky-500/20 text-sky-400 px-2 py-0.5 rounded border border-sky-500/30">ADMIN PORTAL</span>
-              <span class="inline-flex items-center gap-1 text-[10px] font-semibold bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded border border-emerald-500/30 live-pulse">
-                <i class="fa-solid fa-circle text-[6px]"></i> LIVE CLOUD SYNC
-              </span>
+              <span class="font-extrabold text-lg text-white tracking-tight">SHAHA FINLEASE PVT LTD</span>
+              <span id="roleBadgeHeader" class="text-[10px] font-extrabold bg-amber-500/20 text-amber-400 px-2.5 py-0.5 rounded-full border border-amber-500/30 uppercase tracking-wider">SUPER ADMIN</span>
             </div>
-            <p id="lastSyncText" class="text-[11px] text-slate-400">All data in real-time sync with senior management</p>
+            <p class="text-[11px] text-slate-400">Executive Collection & Portfolio Performance Hub</p>
           </div>
         </div>
 
-        <!-- User Profile & Action Tools -->
-        <div class="flex items-center gap-3">
-          <!-- Admin Only Action: Open Data Editor Modal -->
-          <div id="adminActionButtons" class="hidden flex items-center gap-2">
-            <button onclick="openAddCallerModal()" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-white bg-sky-600 hover:bg-sky-500 shadow-sm transition">
-              <i class="fa-solid fa-user-plus text-xs"></i>
-              <span>Add Caller</span>
-            </button>
-            <button onclick="openBulkUpdateModal()" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-500 shadow-sm transition">
-              <i class="fa-solid fa-file-excel text-xs"></i>
-              <span>Upload Fresh Data</span>
-            </button>
-          </div>
-
-          <div class="h-8 w-px bg-slate-800 hidden sm:block"></div>
+        <!-- Role Profile & Actions -->
+        <div class="flex items-center gap-4">
           <div class="text-right hidden sm:block">
-            <div id="userRoleDisplay" class="text-xs font-semibold text-white">System Admin</div>
-            <div id="syncStatusBadge" class="text-[10px] text-emerald-400 font-mono">Synced Now</div>
+            <div id="userDisplayTitle" class="text-xs font-bold text-white">System Super Admin</div>
+            <div class="text-[10px] text-emerald-400 font-mono flex items-center gap-1 justify-end font-semibold">
+              <i class="fa-solid fa-circle text-[7px]"></i> Verified Management Access
+            </div>
           </div>
-          <button onclick="handleLogout()" title="Secure Logout" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-rose-400 hover:text-white bg-rose-500/10 hover:bg-rose-600 transition border border-rose-500/20">
+          <div class="h-8 w-px bg-slate-800 hidden sm:block"></div>
+          <button onclick="handlePortalExit()" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold text-rose-400 hover:text-white bg-rose-500/10 hover:bg-rose-600 transition border border-rose-500/20 shadow-sm">
             <i class="fa-solid fa-power-off"></i>
-            <span class="hidden sm:inline">Lock / Exit</span>
+            <span class="hidden sm:inline">Exit</span>
           </button>
         </div>
       </div>
     </header>
 
-    <!-- Real-Time Activity Notification Bar (Visible to Seniors when Admin updates) -->
-    <div id="liveAlertBanner" class="hidden bg-emerald-500 text-white px-4 py-2 text-xs font-medium text-center shadow-md flex items-center justify-center gap-2 transition duration-300">
-      <i class="fa-solid fa-bell"></i>
-      <span id="liveAlertMessage">Live Update: Admin has updated collection targets. Numbers refreshed!</span>
+    <!-- LIVE METRICS TICKER STRIP -->
+    <div class="bg-gradient-to-r from-slate-900 via-amber-950/40 to-slate-900 border-b border-amber-500/20 py-2.5 px-4 text-xs font-semibold text-slate-300">
+      <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
+        <div class="flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+          <span class="text-amber-400 font-bold uppercase tracking-wider">SHAHA FINLEASE LIVE:</span>
+          <span>Lifetime Collection: <strong id="tickerCollection" class="text-emerald-400 font-mono">₹17,25,59,103</strong></span>
+          <span class="text-slate-500">•</span>
+          <span>Achieved: <strong id="tickerPace" class="text-amber-400 font-bold">22.4%</strong></span>
+          <span class="text-slate-500">•</span>
+          <span>Target Gap: <strong id="tickerGap" class="text-rose-400 font-mono">₹59,84,08,796</strong></span>
+        </div>
+        <div class="text-slate-400 text-[11px]">
+          Total Callers Tracked: <strong class="text-white">260 Callers</strong> (<span class="text-emerald-400 font-bold">108 Active</span>)
+        </div>
+      </div>
     </div>
 
-    <!-- Main Content Area -->
+    <!-- MAIN BODY CONTENT -->
     <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
 
-      <!-- Executive KPI Cards -->
+      <!-- 4 DISTINCT HIGH-IMPACT KPI CARDS -->
       <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+        <!-- TOTAL TARGET -->
+        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 glow-card flex items-center justify-between">
           <div>
-            <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Total Lifetime Achieved</p>
-            <h3 id="statTotalAchieved" class="text-2xl font-extrabold text-slate-900 mt-1">₹0</h3>
-            <p class="text-[11px] text-emerald-600 font-medium mt-1 flex items-center gap-1">
-              <i class="fa-solid fa-arrow-trend-up"></i> Collected across all months
-            </p>
+            <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">TOTAL TARGET</p>
+            <h3 id="statHeroTarget" class="text-2xl font-black text-slate-900 mt-1">₹77,09,67,900</h3>
+            <p class="text-[11px] text-slate-400 font-medium mt-1">Lifetime Target (All Years)</p>
           </div>
-          <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl">
+          <div class="w-12 h-12 rounded-2xl bg-slate-100 text-slate-700 flex items-center justify-center text-xl">
+            <i class="fa-solid fa-bullseye"></i>
+          </div>
+        </div>
+
+        <!-- TOTAL COLLECTION -->
+        <div class="bg-white p-5 rounded-2xl border border-emerald-200 glow-card flex items-center justify-between">
+          <div>
+            <p class="text-xs font-bold text-emerald-700 uppercase tracking-wider">TOTAL COLLECTION</p>
+            <h3 id="statHeroCollection" class="text-2xl font-black text-emerald-600 mt-1">₹17,25,59,103</h3>
+            <p class="text-[11px] text-emerald-600 font-semibold mt-1">Lifetime Total Recovered</p>
+          </div>
+          <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl">
             <i class="fa-solid fa-indian-rupee-sign"></i>
           </div>
         </div>
 
-        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+        <!-- ACHIEVED % -->
+        <div class="bg-white p-5 rounded-2xl border border-amber-200 glow-card flex items-center justify-between">
           <div>
-            <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Total Allocated Target</p>
-            <h3 id="statTotalTarget" class="text-2xl font-extrabold text-slate-900 mt-1">₹0</h3>
-            <p class="text-[11px] text-slate-500 font-medium mt-1 flex items-center gap-1">
-              <i class="fa-solid fa-bullseye text-sky-500"></i> Overall Target Set
-            </p>
+            <p class="text-xs font-bold text-amber-700 uppercase tracking-wider">ACHIEVED %</p>
+            <h3 id="statHeroPct" class="text-2xl font-black text-amber-600 mt-1">22.4%</h3>
+            <p class="text-[11px] text-amber-600 font-semibold mt-1">Overall Recovery Pace</p>
           </div>
-          <div class="w-12 h-12 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center text-xl">
-            <i class="fa-solid fa-crosshairs"></i>
-          </div>
-        </div>
-
-        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
-          <div>
-            <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Overall Recovery %</p>
-            <h3 id="statOverallPct" class="text-2xl font-extrabold text-indigo-600 mt-1">0%</h3>
-            <div class="w-24 bg-slate-100 rounded-full h-1.5 mt-2 overflow-hidden">
-              <div id="statProgressBar" class="bg-indigo-600 h-1.5 rounded-full" style="width: 0%"></div>
-            </div>
-          </div>
-          <div class="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-xl">
+          <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center text-xl">
             <i class="fa-solid fa-chart-pie"></i>
           </div>
         </div>
 
-        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+        <!-- BALANCE AMOUNT -->
+        <div class="bg-white p-5 rounded-2xl border border-rose-200 glow-card flex items-center justify-between">
           <div>
-            <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Callers Tracked</p>
-            <h3 id="statCallerCount" class="text-2xl font-extrabold text-slate-900 mt-1">0</h3>
-            <p class="text-[11px] text-slate-500 font-medium mt-1">
-              <span id="statActiveCallers" class="text-emerald-600 font-bold">0</span> Active Tele-Callers
-            </p>
+            <p class="text-xs font-bold text-rose-700 uppercase tracking-wider">BALANCE AMOUNT</p>
+            <h3 id="statHeroBalance" class="text-2xl font-black text-rose-600 mt-1">₹59,84,08,796</h3>
+            <p class="text-[11px] text-rose-500 font-semibold mt-1">Lifetime Target Gap</p>
           </div>
-          <div class="w-12 h-12 rounded-xl bg-violet-50 text-violet-600 flex items-center justify-center text-xl">
-            <i class="fa-solid fa-users"></i>
+          <div class="w-12 h-12 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center text-xl">
+            <i class="fa-solid fa-triangle-exclamation"></i>
           </div>
         </div>
       </section>
 
-      <!-- Advanced Filter Controls -->
-      <section class="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
-        <div class="flex flex-col md:flex-row gap-3 items-center justify-between">
-          <div class="w-full md:w-72 relative">
-            <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-slate-400 text-xs"></i>
-            <input type="text" id="searchCaller" oninput="applyFilters()" placeholder="Search Caller Name or Emp Code..." 
-              class="w-full pl-9 pr-4 py-2 border border-slate-300 rounded-lg text-xs focus:ring-2 focus:ring-sky-500 focus:outline-none">
+      <!-- NAVIGATION TABS -->
+      <nav class="flex flex-wrap items-center gap-2 p-1.5 bg-white border border-slate-200 rounded-2xl shadow-sm">
+        <button onclick="switchTab('tab-overview')" id="tabBtn-overview" class="tab-btn px-4 py-2.5 rounded-xl font-bold text-xs flex items-center gap-2 bg-gradient-to-r from-amber-500 to-orange-600 text-white shadow-md transition">
+          <i class="fa-solid fa-chart-line text-xs"></i>
+          <span>Executive Overview</span>
+        </button>
+        <button onclick="switchTab('tab-callers')" id="tabBtn-callers" class="tab-btn px-4 py-2.5 rounded-xl font-bold text-xs flex items-center gap-2 text-slate-600 hover:bg-slate-100 transition">
+          <i class="fa-solid fa-users text-xs"></i>
+          <span>Officers Collection Ledger</span>
+        </button>
+        <button onclick="switchTab('tab-managers')" id="tabBtn-managers" class="tab-btn px-4 py-2.5 rounded-xl font-bold text-xs flex items-center gap-2 text-slate-600 hover:bg-slate-100 transition">
+          <i class="fa-solid fa-briefcase text-xs"></i>
+          <span>Manager Portfolio Hub</span>
+        </button>
+        <button onclick="switchTab('tab-podium')" id="tabBtn-podium" class="tab-btn px-4 py-2.5 rounded-xl font-bold text-xs flex items-center gap-2 text-slate-600 hover:bg-slate-100 transition">
+          <i class="fa-solid fa-trophy text-amber-500 text-xs"></i>
+          <span>🏆 Top Performers Leaderboard</span>
+        </button>
+      </nav>
+
+      <!-- ============================================== -->
+      <!-- TAB 1: EXECUTIVE OVERVIEW CONTENT              -->
+      <!-- ============================================== -->
+      <div id="tab-overview" class="tab-content space-y-6">
+        <!-- Branch Cards & Manager Charts Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <!-- Branch Wise Recovery Cards -->
+          <div class="bg-white rounded-2xl border border-slate-200 p-6 glow-card">
+            <div class="flex items-center justify-between mb-4">
+              <div>
+                <h3 class="text-sm font-extrabold text-slate-900 uppercase tracking-wider flex items-center gap-2">
+                  <i class="fa-solid fa-building text-amber-500"></i> Branch Wise Collection
+                </h3>
+                <p class="text-xs text-slate-500">Target vs Realized Recovery per Branch</p>
+              </div>
+              <span class="text-[11px] font-bold bg-amber-50 text-amber-700 border border-amber-200 px-2.5 py-1 rounded-full">3 Branches</span>
+            </div>
+
+            <div id="branchListContainer" class="space-y-3.5">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+
+          <!-- Manager Performance Chart -->
+          <div class="bg-white rounded-2xl border border-slate-200 p-6 glow-card flex flex-col">
+            <div class="flex items-center justify-between mb-4">
+              <div>
+                <h3 class="text-sm font-extrabold text-slate-900 uppercase tracking-wider flex items-center gap-2">
+                  <i class="fa-solid fa-chart-column text-orange-500"></i> Manager Target vs Recovery
+                </h3>
+                <p class="text-xs text-slate-500">Comparative Team Recovery & Achievements</p>
+              </div>
+            </div>
+            <div class="flex-1 min-h-[260px] relative">
+              <canvas id="managerBarChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Month Trend Curve Chart -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-6 glow-card">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h3 class="text-sm font-extrabold text-slate-900 uppercase tracking-wider flex items-center gap-2">
+                <i class="fa-solid fa-arrow-trend-up text-emerald-500"></i> Collection Velocity Trend (Lifetime)
+              </h3>
+              <p class="text-xs text-slate-500">Month-on-Month Targets vs Actual Collections Tracked</p>
+            </div>
+          </div>
+          <div class="h-64 relative">
+            <canvas id="trendLineChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================== -->
+      <!-- TAB 2: CALLER COLLECTION LEDGER                -->
+      <!-- ============================================== -->
+      <div id="tab-callers" class="tab-content hidden space-y-4">
+        <div class="bg-white rounded-2xl border border-slate-200 p-4 glow-card flex flex-col md:flex-row gap-3 items-center justify-between">
+          <div class="w-full md:w-80 relative">
+            <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-400 text-xs"></i>
+            <input type="text" id="callerSearchInput" oninput="filterCallers()" placeholder="Search Caller Name or Emp Code..." 
+              class="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-amber-500 focus:outline-none">
           </div>
 
           <div class="flex flex-wrap items-center gap-2.5 w-full md:w-auto">
-            <!-- Branch Filter -->
-            <select id="filterBranch" onchange="applyFilters()" class="text-xs border border-slate-300 rounded-lg px-3 py-2 bg-slate-50 text-slate-700 focus:ring-2 focus:ring-sky-500 focus:outline-none">
+            <select id="branchFilter" onchange="filterCallers()" class="text-xs border border-slate-200 rounded-xl px-3 py-2 bg-slate-50 text-slate-700 font-semibold focus:outline-none">
               <option value="ALL">All Branches</option>
             </select>
-
-            <!-- Manager Filter -->
-            <select id="filterManager" onchange="applyFilters()" class="text-xs border border-slate-300 rounded-lg px-3 py-2 bg-slate-50 text-slate-700 focus:ring-2 focus:ring-sky-500 focus:outline-none">
-              <option value="ALL">All Managers</option>
-            </select>
-
-            <!-- Status Filter -->
-            <select id="filterStatus" onchange="applyFilters()" class="text-xs border border-slate-300 rounded-lg px-3 py-2 bg-slate-50 text-slate-700 focus:ring-2 focus:ring-sky-500 focus:outline-none">
+            <select id="statusFilter" onchange="filterCallers()" class="text-xs border border-slate-200 rounded-xl px-3 py-2 bg-slate-50 text-slate-700 font-semibold focus:outline-none">
               <option value="ALL">All Status</option>
               <option value="Active">Active Only</option>
               <option value="Inactive">Inactive Only</option>
             </select>
-
-            <!-- Export to CSV -->
-            <button onclick="exportToCSV()" class="inline-flex items-center gap-1.5 px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-medium rounded-lg shadow-sm transition">
+            <button onclick="exportCSV()" class="inline-flex items-center gap-1.5 px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-sm transition">
               <i class="fa-solid fa-file-excel"></i>
               <span>Export CSV</span>
             </button>
           </div>
         </div>
-      </section>
 
-      <!-- Main Caller Performance Table -->
-      <section class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-        <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
-          <div>
-            <h2 class="text-base font-bold text-slate-900">Caller Collection Summary (Joining Date to Till Date)</h2>
-            <p class="text-xs text-slate-500">Live cloud-synced records with month-wise drilldown</p>
-          </div>
-          <span id="callerResultsCount" class="text-xs font-semibold px-2.5 py-1 bg-slate-100 text-slate-600 rounded-full">Showing 0 Callers</span>
-        </div>
-
-        <div class="overflow-x-auto custom-scrollbar max-h-[520px]">
-          <table class="w-full text-left border-collapse text-xs">
-            <thead class="bg-slate-50 text-slate-600 uppercase tracking-wider sticky top-0 border-b border-slate-200 font-semibold select-none z-10">
-              <tr>
-                <th class="py-3 px-4">Emp Code</th>
-                <th class="py-3 px-4">Caller Name</th>
-                <th class="py-3 px-4">Joining Date</th>
-                <th class="py-3 px-4">Branch / TL</th>
-                <th class="py-3 px-4">Status</th>
-                <th class="py-3 px-4 text-right">Lifetime Target</th>
-                <th class="py-3 px-4 text-right">Lifetime Achieved</th>
-                <th class="py-3 px-4 text-center">Achievement %</th>
-                <th class="py-3 px-4 text-center">Action</th>
-              </tr>
-            </thead>
-            <tbody id="callerTableBody" class="divide-y divide-slate-100 text-slate-700">
-              <!-- Dynamically populated -->
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-    </main>
-
-    <!-- Footer -->
-    <footer class="bg-white border-t border-slate-200 py-3 text-center text-xs text-slate-500">
-      <p>Real-Time Synchronized Portal &copy; 2026 Shah Finlease. Senior Management & Admin Gateway.</p>
-    </footer>
-  </div>
-
-
-  <!-- ========================================== -->
-  <!-- 3. CALLER MONTHLY DRILL-DOWN MODAL         -->
-  <!-- ========================================== -->
-  <div id="callerModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden animate-fade-in">
-      
-      <!-- Modal Header -->
-      <div class="px-6 py-4 bg-slate-900 text-white flex items-center justify-between border-b border-slate-800">
-        <div>
-          <div class="flex items-center gap-2">
-            <h3 id="modalCallerName" class="text-lg font-bold">Caller History</h3>
-            <span id="modalCallerEmpId" class="text-xs bg-sky-500/20 text-sky-300 border border-sky-500/30 px-2 py-0.5 rounded font-mono">100508</span>
-            <span id="modalCallerStatus" class="text-xs px-2 py-0.5 rounded font-semibold bg-emerald-500/20 text-emerald-300">Active</span>
-          </div>
-          <p id="modalCallerMeta" class="text-xs text-slate-400 mt-0.5">Branch: INH_JOS | Manager: SHRAVANTI | Joined: 24-Oct-2025</p>
-        </div>
-        <button onclick="closeModal()" class="w-8 h-8 rounded-lg bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700 flex items-center justify-center transition">
-          <i class="fa-solid fa-xmark text-sm"></i>
-        </button>
-      </div>
-
-      <!-- Modal Body -->
-      <div class="p-6 overflow-y-auto custom-scrollbar space-y-6">
-        
-        <!-- Summary Strip in Modal -->
-        <div class="grid grid-cols-3 gap-4">
-          <div class="bg-slate-50 border border-slate-200 p-3.5 rounded-xl text-center">
-            <span class="text-[11px] font-medium text-slate-500 uppercase">Total Target Assigned</span>
-            <h4 id="modalTotalTarget" class="text-base font-extrabold text-slate-900 mt-0.5">₹0</h4>
-          </div>
-          <div class="bg-emerald-50 border border-emerald-200 p-3.5 rounded-xl text-center">
-            <span class="text-[11px] font-medium text-emerald-700 uppercase">Total Recovered</span>
-            <h4 id="modalTotalAchieved" class="text-base font-extrabold text-emerald-700 mt-0.5">₹0</h4>
-          </div>
-          <div class="bg-indigo-50 border border-indigo-200 p-3.5 rounded-xl text-center">
-            <span class="text-[11px] font-medium text-indigo-700 uppercase">Overall Achievement</span>
-            <h4 id="modalAchPct" class="text-base font-extrabold text-indigo-700 mt-0.5">0%</h4>
-          </div>
-        </div>
-
-        <!-- Monthly Breakdown Chart -->
-        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
-          <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-3">Collection Trend Since Joining</h4>
-          <div class="h-48 relative">
-            <canvas id="monthlyTrendChart"></canvas>
-          </div>
-        </div>
-
-        <!-- Monthly Breakdown Table -->
-        <div>
-          <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Month-wise Details</h4>
-          <div class="border border-slate-200 rounded-xl overflow-hidden shadow-sm">
-            <table class="w-full text-xs text-left">
-              <thead class="bg-slate-100 text-slate-600 font-semibold border-b border-slate-200 uppercase tracking-wider">
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden glow-card">
+          <div class="overflow-x-auto custom-scrollbar max-h-[560px]">
+            <table class="w-full text-left border-collapse text-xs">
+              <thead class="bg-slate-50 text-slate-600 uppercase tracking-wider sticky top-0 border-b border-slate-200 font-bold select-none z-10">
                 <tr>
-                  <th class="py-2.5 px-4">Year & Month</th>
-                  <th class="py-2.5 px-4 text-right">Target Amount</th>
-                  <th class="py-2.5 px-4 text-right">Achieved Amount</th>
-                  <th class="py-2.5 px-4 text-center">Achievement %</th>
-                  <th class="py-2.5 px-4 text-center">Performance Rating</th>
+                  <th class="py-3 px-4">Emp Code</th>
+                  <th class="py-3 px-4">Caller Name</th>
+                  <th class="py-3 px-4">Joining Date (DOJ)</th>
+                  <th class="py-3 px-4">Branch / Manager</th>
+                  <th class="py-3 px-4 text-center">Status</th>
+                  <th class="py-3 px-4 text-right">Lifetime Target</th>
+                  <th class="py-3 px-4 text-right">Total Recovered</th>
+                  <th class="py-3 px-4 text-center">Achievement %</th>
                 </tr>
               </thead>
-              <tbody id="modalTableBody" class="divide-y divide-slate-100 text-slate-700">
-                <!-- Dynamically rendered -->
+              <tbody id="callerTableBody" class="divide-y divide-slate-100 text-slate-700">
+                <!-- Dynamically populated -->
               </tbody>
             </table>
           </div>
         </div>
-
       </div>
 
-      <!-- Modal Footer -->
-      <div class="px-6 py-3 bg-slate-50 border-t border-slate-200 text-right">
-        <button onclick="closeModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-lg text-xs font-medium transition">
-          Close Window
-        </button>
+      <!-- ============================================== -->
+      <!-- TAB 3: MANAGER PORTFOLIO HUB                   -->
+      <!-- ============================================== -->
+      <div id="tab-managers" class="tab-content hidden space-y-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="managerCardsContainer">
+          <!-- Dynamically populated -->
+        </div>
       </div>
 
-    </div>
+      <!-- ============================================== -->
+      <!-- TAB 4: TOP PERFORMERS LEADERBOARD              -->
+      <!-- ============================================== -->
+      <div id="tab-podium" class="tab-content hidden space-y-4">
+        <div class="bg-white rounded-2xl border border-slate-200 p-6 glow-card">
+          <div class="flex items-center justify-between mb-6">
+            <div>
+              <h3 class="text-base font-extrabold text-slate-900 flex items-center gap-2">
+                <i class="fa-solid fa-trophy text-amber-500"></i> Top 10 High Achievers (By Recovery %)
+              </h3>
+              <p class="text-xs text-slate-500">Highest performance callers across Shah Finlease</p>
+            </div>
+            <span class="text-xs font-bold px-3 py-1 bg-amber-50 text-amber-700 border border-amber-200 rounded-full">Hall of Fame</span>
+          </div>
+
+          <div class="overflow-x-auto custom-scrollbar">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-slate-50 text-slate-600 uppercase font-bold border-b border-slate-200">
+                <tr>
+                  <th class="py-3 px-4">Rank</th>
+                  <th class="py-3 px-4">Caller Name</th>
+                  <th class="py-3 px-4">Manager</th>
+                  <th class="py-3 px-4 text-right">Assigned Target</th>
+                  <th class="py-3 px-4 text-right">Total Recovered</th>
+                  <th class="py-3 px-4 text-center">Achievement %</th>
+                </tr>
+              </thead>
+              <tbody id="topPerformersBody" class="divide-y divide-slate-100">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-500">
+      <p>Shah Finlease Pvt Ltd &copy; 2026. Confidential Management & Admin Portal.</p>
+    </footer>
   </div>
 
-
-  <!-- ========================================== -->
-  <!-- 4. ADMIN EDIT / UPDATE MODAL               -->
-  <!-- ========================================== -->
-  <div id="adminEditModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-lg overflow-hidden animate-fade-in">
-      <div class="px-6 py-4 bg-sky-900 text-white flex items-center justify-between border-b border-sky-800">
-        <div class="flex items-center gap-2">
-          <i class="fa-solid fa-pen-to-square text-sky-400"></i>
-          <h3 class="text-base font-bold">Edit Caller Targets / Collections</h3>
-        </div>
-        <button onclick="closeEditModal()" class="text-slate-300 hover:text-white">
-          <i class="fa-solid fa-xmark text-sm"></i>
-        </button>
-      </div>
-
-      <form id="editCallerForm" onsubmit="handleSaveCallerUpdate(event)" class="p-6 space-y-4">
-        <input type="hidden" id="editEmpId">
-        <div>
-          <label class="block text-xs font-semibold text-slate-600 mb-1">Caller Name</label>
-          <input type="text" id="editCallerName" readonly class="w-full bg-slate-100 border border-slate-300 rounded-lg px-3 py-2 text-xs font-bold text-slate-700">
-        </div>
-
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="block text-xs font-semibold text-slate-600 mb-1">Branch</label>
-            <input type="text" id="editCallerBranch" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-xs">
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-600 mb-1">Manager / TL</label>
-            <input type="text" id="editCallerManager" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-xs">
-          </div>
-        </div>
-
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="block text-xs font-semibold text-slate-600 mb-1">Total Target (₹)</label>
-            <input type="number" id="editCallerTarget" required class="w-full border border-slate-300 rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-sky-500">
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-600 mb-1">Total Achieved (₹)</label>
-            <input type="number" id="editCallerAchieved" required class="w-full border border-slate-300 rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-sky-500">
-          </div>
-        </div>
-
-        <div>
-          <label class="block text-xs font-semibold text-slate-600 mb-1">Status</label>
-          <select id="editCallerStatus" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-xs">
-            <option value="Active">Active</option>
-            <option value="Inactive">Inactive</option>
-          </select>
-        </div>
-
-        <div class="pt-2 flex items-center justify-end gap-2">
-          <button type="button" onclick="closeEditModal()" class="px-4 py-2 border border-slate-300 text-slate-600 rounded-lg text-xs font-medium">Cancel</button>
-          <button type="submit" class="px-5 py-2 bg-sky-600 hover:bg-sky-500 text-white rounded-lg text-xs font-bold shadow-md flex items-center gap-1.5">
-            <i class="fa-solid fa-cloud-arrow-up"></i>
-            <span>Broadcast Live Change to Seniors</span>
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-
-  <!-- ========================================== -->
-  <!-- 5. ADMIN BULK EXCEL UPLOAD MODAL           -->
-  <!-- ========================================== -->
-  <div id="bulkUploadModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-lg overflow-hidden animate-fade-in">
-      <div class="px-6 py-4 bg-emerald-900 text-white flex items-center justify-between border-b border-emerald-800">
-        <div class="flex items-center gap-2">
-          <i class="fa-solid fa-file-excel text-emerald-400"></i>
-          <h3 class="text-base font-bold">Admin: Upload Fresh Excel / Sheet</h3>
-        </div>
-        <button onclick="closeBulkModal()" class="text-slate-300 hover:text-white">
-          <i class="fa-solid fa-xmark text-sm"></i>
-        </button>
-      </div>
-
-      <div class="p-6 space-y-4">
-        <p class="text-xs text-slate-600 leading-relaxed">
-          Admin yahan se naya collection excel sheet upload kar sakta hai. Upload hote hi sabhi senior management ke devices par instant live update broadcast ho jayega.
-        </p>
-
-        <div class="border-2 border-dashed border-slate-300 hover:border-emerald-500 rounded-xl p-6 text-center cursor-pointer transition" onclick="document.getElementById('excelFileInput').click()">
-          <i class="fa-solid fa-cloud-arrow-up text-3xl text-emerald-600 mb-2"></i>
-          <p class="text-xs font-bold text-slate-700">Click to Select Excel File (.xlsx, .csv)</p>
-          <p class="text-[11px] text-slate-400 mt-1">Columns: Employee ID, Name, Target, Achieved, Month, Branch</p>
-          <input type="file" id="excelFileInput" accept=".xlsx, .xls, .csv" class="hidden" onchange="handleExcelUpload(event)">
-        </div>
-
-        <div id="uploadFeedback" class="hidden text-xs p-3 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center gap-2">
-          <i class="fa-solid fa-circle-check"></i>
-          <span id="uploadFeedbackText">File parsed and synced successfully!</span>
-        </div>
-
-        <div class="flex justify-end">
-          <button onclick="closeBulkModal()" class="px-4 py-2 border border-slate-300 text-slate-600 rounded-lg text-xs font-medium">Close</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-
-  <!-- Load Initial Encrypted Vault File -->
-  <script src="encrypted_data.js"></script>
-
-  <!-- Real-Time Sync & Logic Script -->
+  <!-- STANDALONE DATA PAYLOAD -->
   <script>
-    // Role & Session State
-    let selectedRole = 'admin';
-    let currentAuthRole = null;
-    let PORTAL_DATA = null;
-    let filteredCallers = [];
+    const BUNDLE = {"summary": {"total_target": 770967900.0, "total_achieved": 172559103.38, "overall_pct": 22.4, "balance": 598408796.62, "total_callers": 260, "active_callers": 150, "branches_count": 3, "managers_count": 13}, "callers": [{"id": "100004", "name": "ANGEL", "branch": "AGENCY", "manager": "SATISH P", "status": "Inactive", "doj": "N/A", "target": 4000000.0, "achieved": 1161886.0, "pct": 29.0, "months": 20}, {"id": "100004", "name": "ARPITA", "branch": "AGENCY", "manager": "SATISH P", "status": "Inactive", "doj": "N/A", "target": 0.0, "achieved": 192000.0, "pct": 0, "months": 20}, {"id": "100004", "name": "BK", "branch": "AGENCY", "manager": "SATISH P", "status": "Inactive", "doj": "N/A", "target": 6000000.0, "achieved": 68121.0, "pct": 1.1, "months": 20}, {"id": "100004", "name": "DEBTZEE", "branch": "AGENCY", "manager": "SATISH P", "status": "Inactive", "doj": "N/A", "target": 6000000.0, "achieved": 16785.0, "pct": 0.3, "months": 20}, {"id": "100004", "name": "EPIC", "branch": "AGENCY", "manager": "SATISH P", "status": "Inactive", "doj": "N/A", "target": 4050000.0, "achieved": 39053.0, "pct": 1.0, "months": 20}, {"id": "100004", "name": "KOLHAPUR", "branch": "AGENCY", "manager": "SATISH P", "status": "Inactive", "doj": "N/A", "target": 10000000.0, "achieved": 0.0, "pct": 0.0, "months": 20}, {"id": "100004", "name": "MAHARASHTRA", "branch": "AGENCY", "manager": "SATISH P", "status": "Inactive", "doj": "N/A", "target": 4150000.0, "achieved": 12000.0, "pct": 0.3, "months": 20}, {"id": "100004", "name": "MOHSIN", "branch": "AGENCY", "manager": "SATISH P", "status": "Inactive", "doj": "N/A", "target": 11500000.0, "achieved": 300733.0, "pct": 2.6, "months": 20}, {"id": "100004", "name": "PRISHA", "branch": "AGENCY", "manager": "SATISH P", "status": "Inactive", "doj": "N/A", "target": 2200000.0, "achieved": 0.0, "pct": 0.0, "months": 20}, {"id": "100004", "name": "SIRSI", "branch": "AGENCY", "manager": "SATISH P", "status": "Active", "doj": "N/A", "target": 6200000.0, "achieved": 1642000.0, "pct": 26.5, "months": 20}, {"id": "100004", "name": "SSA", "branch": "AGENCY", "manager": "SATISH P", "status": "Inactive", "doj": "N/A", "target": 4000000.0, "achieved": 65920.0, "pct": 1.6, "months": 20}, {"id": "100004", "name": "V4", "branch": "AGENCY", "manager": "SATISH P", "status": "Inactive", "doj": "N/A", "target": 8000000.0, "achieved": 129370.0, "pct": 1.6, "months": 20}, {"id": "100004", "name": "VMPL", "branch": "AGENCY", "manager": "SATISH P", "status": "Inactive", "doj": "N/A", "target": 0.0, "achieved": 3201477.0, "pct": 0, "months": 20}, {"id": "100150", "name": "SANJANA", "branch": "INH_JOS", "manager": "AMBUJ T", "status": "Inactive", "doj": "12-Feb-2022", "target": 5000000.0, "achieved": 290542.0, "pct": 5.8, "months": 20}, {"id": "100163", "name": "DEEPAK", "branch": "INH_JOS", "manager": "OMKAR S", "status": "Inactive", "doj": "12-Jul-2022", "target": 5400000.0, "achieved": 188235.0, "pct": 3.5, "months": 20}, {"id": "100227", "name": "POOJA YADAV", "branch": "INH_JOS", "manager": "ADITI", "status": "Inactive", "doj": "05-Jan-2023", "target": 3800000.0, "achieved": 0.0, "pct": 0.0, "months": 20}, {"id": "100405", "name": "PRAVIN", "branch": "INH_JOS", "manager": "AMBUJ T", "status": "Inactive", "doj": "10-Jul-2024", "target": 4860000.0, "achieved": 927946.0, "pct": 19.1, "months": 20}, {"id": "100406", "name": "SUVARNA", "branch": "INH_JOS", "manager": "AMBUJ T", "status": "Inactive", "doj": "N/A", "target": 5000000.0, "achieved": 190364.0, "pct": 3.8, "months": 20}, {"id": "100412", "name": "ASMA", "branch": "INH_JOS", "manager": "AMBUJ T", "status": "Inactive", "doj": "11-Nov-2024", "target": 7175000.0, "achieved": 1172970.0, "pct": 16.3, "months": 20}, {"id": "100413", "name": "REENA", "branch": "INH_JOS", "manager": "AMBUJ T", "status": "Inactive", "doj": "N/A", "target": 5600000.0, "achieved": 995653.0, "pct": 17.8, "months": 20}, {"id": "100414", "name": "PINKY", "branch": "INH_JOS", "manager": "AMBUJ T", "status": "Inactive", "doj": "N/A", "target": 5000000.0, "achieved": 398517.0, "pct": 8.0, "months": 20}, {"id": "100416", "name": "MINAKSHI", "branch": "INH_JOS", "manager": "AMBUJ T", "status": "Inactive", "doj": "N/A", "target": 3600000.0, "achieved": 223527.0, "pct": 6.2, "months": 20}, {"id": "100418", "name": "SONIYA", "branch": "INH_JOS", "manager": "AMBUJ T", "status": "Inactive", "doj": "N/A", "target": 5200000.0, "achieved": 746965.0, "pct": 14.4, "months": 20}, {"id": "100422", "name": "SONALI", "branch": "INH_JOS", "manager": "OMKAR S", "status": "Inactive", "doj": "01-Feb-2025", "target": 3800000.0, "achieved": 59902.0, "pct": 1.6, "months": 20}, {"id": "100424", "name": "SHUBHAM", "branch": "INH_JOS", "manager": "OMKAR S", "status": "Inactive", "doj": "01-Jun-2025", "target": 3200000.0, "achieved": 244645.0, "pct": 7.6, "months": 20}, {"id": "100426", "name": "RUCHITA", "branch": "INH_JOS", "manager": "OMKAR S", "status": "Inactive", "doj": "01-Sep-2025", "target": 3200000.0, "achieved": 175522.0, "pct": 5.5, "months": 20}, {"id": "100430", "name": "GAURAV", "branch": "INH_JOS", "manager": "OMKAR S", "status": "Inactive", "doj": "N/A", "target": 3800000.0, "achieved": 48158.0, "pct": 1.3, "months": 20}, {"id": "100431", "name": "KARISHMA B", "branch": "INH_JOS", "manager": "AMBUJ T", "status": "Inactive", "doj": "N/A", "target": 5200000.0, "achieved": 711013.0, "pct": 13.7, "months": 20}, {"id": "100432", "name": "SUYASH", "branch": "INH_JOS", "manager": "OMKAR S", "status": "Inactive", "doj": "N/A", "target": 4200000.0, "achieved": 0.0, "pct": 0.0, "months": 20}, {"id": "100434", "name": "CHANDRAKALA", "branch": "INH_JOS", "manager": "OMKAR S", "status": "Inactive", "doj": "02-Mar-2025", "target": 5200000.0, "achieved": 541925.0, "pct": 10.4, "months": 20}, {"id": "100435", "name": "RUNA", "branch": "INH_JOS", "manager": "AMBUJ T", "status": "Inactive", "doj": "02-Mar-2025", "target": 6000000.0, "achieved": 40214.0, "pct": 0.7, "months": 20}, {"id": "100436", "name": "SUSHMA", "branch": "INH_JOS", "manager": "AMBUJ T", "status": "Inactive", "doj": "02-Mar-2025", "target": 4600000.0, "achieved": 85211.0, "pct": 1.9, "months": 20}, {"id": "100438", "name": "TANVI", "branch": "INH_JOS", "manager": "OMKAR S", "status": "Inactive", "doj": "02-Mar-2025", "target": 5000000.0, "achieved": 557164.0, "pct": 11.1, "months": 20}, {"id": "100439", "name": "RITU", "branch": "INH_JOS", "manager": "AMBUJ T", "status": "Inactive", "doj": "02-Jun-2025", "target": 5000000.0, "achieved": 75033.0, "pct": 1.5, "months": 20}, {"id": "100440", "name": "SHEELA", "branch": "INH_JOS", "manager": "AMBUJ T", "status": "Inactive", "doj": "02-Jul-2025", "target": 4000000.0, "achieved": 62320.0, "pct": 1.6, "months": 20}, {"id": "100442", "name": "AAKRITI", "branch": "AGENCY", "manager": "POONAM", "status": "Inactive", "doj": "N/A", "target": 5150000.0, "achieved": 797719.0, "pct": 15.5, "months": 20}, {"id": "100442", "name": "AF", "branch": "AGENCY", "manager": "POONAM", "status": "Inactive", "doj": "N/A", "target": 5800000.0, "achieved": 117599.0, "pct": 2.0, "months": 20}, {"id": "100442", "name": "ARISE", "branch": "AGENCY", "manager": "POONAM", "status": "Inactive", "doj": "N/A", "target": 9212000.0, "achieved": 209317.0, "pct": 2.3, "months": 20}, {"id": "100442", "name": "DSP", "branch": "AGENCY", "manager": "POONAM", "status": "Inactive", "doj": "N/A", "target": 6300000.0, "achieved": 175016.0, "pct": 2.8, "months": 20}, {"id": "100442", "name": "EKVIRA", "branch": "AGENCY", "manager": "POONAM", "status": "Inactive", "doj": "N/A", "target": 2000000.0, "achieved": 70125.0, "pct": 3.5, "months": 20}, {"id": "100442", "name": "NIRVAN", "branch": "AGENCY", "manager": "POONAM", "status": "Inactive", "doj": "N/A", "target": 4000000.0, "achieved": 939683.0, "pct": 23.5, "months": 20}, {"id": "100442", "name": "SSS", "branch": "AGENCY", "manager": "POONAM", "status": "Inactive", "doj": "N/A", "target": 4700000.0, "achieved": 1927392.0, "pct": 41.0, "months": 20}, {"id": "100442", "name": "TANGENT", "branch": "AGENCY", "manager": "POONAM", "status": "Inactive", "doj": "N/A", "target": 5900000.0, "achieved": 333653.0, "pct": 5.7, "months": 20}, {"id": "100442", "name": "TRIUMPH", "branch": "AGENCY", "manager": "POONAM", "status": "Inactive", "doj": "N/A", "target": 7000000.0, "achieved": 547799.0, "pct": 7.8, "months": 20}, {"id": "100443", "name": "RITUJA", "branch": "INH_JOS", "manager": "AMBUJ T", "status": "Inactive", "doj": "N/A", "target": 4620000.0, "achieved": 612487.0, "pct": 13.3, "months": 20}, {"id": "100444", "name": "RESHMA", "branch": "INH_JOS", "manager": "AMBUJ T", "status": "Inactive", "doj": "N/A", "target": 4000000.0, "achieved": 71000.0, "pct": 1.8, "months": 20}, {"id": "100447", "name": "VINA", "branch": "INH_JOS", "manager": "AMBUJ T", "status": "Inactive", "doj": "03-Mar-2025", "target": 6000000.0, "achieved": 88183.0, "pct": 1.5, "months": 20}, {"id": "100453", "name": "NILESH", "branch": "INH_JOS", "manager": "OMKAR S", "status": "Inactive", "doj": "04-Jan-2025", "target": 4000000.0, "achieved": 16000.0, "pct": 0.4, "months": 20}, {"id": "100454", "name": "SAURABH KULYE", "branch": "INH_JOS", "manager": "ADITI", "status": "Inactive", "doj": "05-Feb-2025", "target": 5040000.0, "achieved": 1636880.0, "pct": 32.5, "months": 20}, {"id": "100484", "name": "ASHWINI", "branch": "INH_JOS", "manager": "OMKAR S", "status": "Inactive", "doj": "N/A", "target": 5600000.0, "achieved": 23557.0, "pct": 0.4, "months": 20}, {"id": "100485", "name": "KRUTIKA", "branch": "INH_JOS", "manager": "OMKAR S", "status": "Inactive", "doj": "N/A", "target": 5200000.0, "achieved": 62754.0, "pct": 1.2, "months": 20}, {"id": "100486", "name": "PRAJYOTI", "branch": "INH_JOS", "manager": "OMKAR S", "status": "Inactive", "doj": "N/A", "target": 5400000.0, "achieved": 91910.0, "pct": 1.7, "months": 20}, {"id": "100487", "name": "AYUSH SURVE", "branch": "INH_DADAR", "manager": "SMITA", "status": "Inactive", "doj": "N/A", "target": 2180000.0, "achieved": 140539.0, "pct": 6.4, "months": 14}, {"id": "100488", "name": "PAWAN", "branch": "INH_JOS", "manager": "OMKAR S", "status": "Inactive", "doj": "N/A", "target": 3800000.0, "achieved": 0.0, "pct": 0.0, "months": 20}, {"id": "100491", "name": "AKANSHA", "branch": "INH_DADAR", "manager": "SMITA", "status": "Inactive", "doj": "06-Mar-2025", "target": 2800000.0, "achieved": 335627.0, "pct": 12.0, "months": 14}, {"id": "100494", "name": "ROSHAN", "branch": "INH_DADAR", "manager": "SMITA", "status": "Inactive", "doj": "06-Sep-2025", "target": 2520000.0, "achieved": 10742.0, "pct": 0.4, "months": 14}, {"id": "100501", "name": "KARTIK", "branch": "INH_DADAR", "manager": "SMITA", "status": "Inactive", "doj": "07-Mar-2025", "target": 2380000.0, "achieved": 105418.0, "pct": 4.4, "months": 14}, {"id": "100502", "name": "RUDRA", "branch": "INH_JOS", "manager": "OMKAR S", "status": "Inactive", "doj": "07-Mar-2025", "target": 3400000.0, "achieved": 152642.0, "pct": 4.5, "months": 20}, {"id": "100503", "name": "MANJUNATH", "branch": "INH_JOS", "manager": "OMKAR S", "status": "Inactive", "doj": "07-Jul-2025", "target": 3600000.0, "achieved": 187250.0, "pct": 5.2, "months": 20}, {"id": "100504", "name": "NIKHIL", "branch": "INH_JOS", "manager": "OMKAR S", "status": "Inactive", "doj": "N/A", "target": 4600000.0, "achieved": 541855.0, "pct": 11.8, "months": 20}, {"id": "100508", "name": "AAKASH", "branch": "INH_JOS", "manager": "ADITI", "status": "Inactive", "doj": "08-Nov-2025", "target": 3800000.0, "achieved": 53110.0, "pct": 1.4, "months": 20}, {"id": "100509", "name": "VAIBHAV", "branch": "INH_JOS", "manager": "OMKAR S", "status": "Inactive", "doj": "08-Nov-2025", "target": 3600000.0, "achieved": 74700.0, "pct": 2.1, "months": 20}, {"id": "100510", "name": "SUPRIYA", "branch": "INH_JOS", "manager": "ADITI", "status": "Inactive", "doj": "N/A", "target": 5000000.0, "achieved": 41100.0, "pct": 0.8, "months": 20}, {"id": "100514", "name": "TEJAL", "branch": "INH_DADAR", "manager": "SMITA", "status": "Inactive", "doj": "09-Aug-2025", "target": 3220000.0, "achieved": 0.0, "pct": 0.0, "months": 14}, {"id": "100520", "name": "DHANRAJ", "branch": "INH_JOS", "manager": "OMKAR S", "status": "Inactive", "doj": "09-Dec-2025", "target": 3600000.0, "achieved": 242740.0, "pct": 6.7, "months": 20}, {"id": "100521", "name": "SHAYARA", "branch": "INH_JOS", "manager": "AMBUJ T", "status": "Inactive", "doj": "N/A", "target": 5400000.0, "achieved": 0.0, "pct": 0.0, "months": 20}, {"id": "100523", "name": "AZAR", "branch": "INH_JOS", "manager": "OMKAR S", "status": "Inactive", "doj": "N/A", "target": 4000000.0, "achieved": 555228.0, "pct": 13.9, "months": 20}, {"id": "100524", "name": "MAHENDRA", "branch": "INH_DADAR", "manager": "SMITA", "status": "Inactive", "doj": "N/A", "target": 2520000.0, "achieved": 11895.0, "pct": 0.5, "months": 14}, {"id": "100525", "name": "VAISHNAVI", "branch": "INH_JOS", "manager": "OMKAR S", "status": "Inactive", "doj": "N/A", "target": 3200000.0, "achieved": 27956.0, "pct": 0.9, "months": 20}, {"id": "100526", "name": "MANASI", "branch": "INH_JOS", "manager": "OMKAR S", "status": "Inactive", "doj": "N/A", "target": 3200000.0, "achieved": 10875.0, "pct": 0.3, "months": 20}, {"id": "100528", "name": "MAHEK MUZAWAR", "branch": "INH_JOS", "manager": "AMBUJ T", "status": "Inactive", "doj": "10-Jun-2025", "target": 4600000.0, "achieved": 0.0, "pct": 0.0, "months": 20}, {"id": "100529", "name": "AFRIN SHAIKH", "branch": "INH_JOS", "manager": "AMBUJ T", "status": "Inactive", "doj": "10-Jan-2025", "target": 3800000.0, "achieved": 0.0, "pct": 0.0, "months": 20}, {"id": "100530", "name": "DEEP SHINDE", "branch": "INH_JOS", "manager": "AMBUJ T", "status": "Inactive", "doj": "10-Jun-2025", "target": 5400000.0, "achieved": 26090.0, "pct": 0.5, "months": 20}, {"id": "100531", "name": "RUPESH M", "branch": "INH_DADAR", "manager": "SMITA", "status": "Inactive", "doj": "10-Jun-2025", "target": 2940000.0, "achieved": 0.0, "pct": 0.0, "months": 14}, {"id": "100532", "name": "SAYYAD USMAN", "branch": "INH_JOS", "manager": "AMBUJ T", "status": "Inactive", "doj": "10-Jan-2025", "target": 5000000.0, "achieved": 0.0, "pct": 0.0, "months": 20}, {"id": "100533", "name": "HEMANT MELKARI", "branch": "INH_JOS", "manager": "AMBUJ T", "status": "Inactive", "doj": "10-Jan-2025", "target": 4600000.0, "achieved": 0.0, "pct": 0.0, "months": 20}, {"id": "100540", "name": "SUSHMITA ", "branch": "INH_DADAR", "manager": "SMITA", "status": "Inactive", "doj": "11-Apr-2025", "target": 2800000.0, "achieved": 507421.0, "pct": 18.1, "months": 14}, {"id": "100542", "name": "SAYALI JADHAV", "branch": "INH_JOS", "manager": "ADITI", "status": "Inactive", "doj": "11-May-2025", "target": 4200000.0, "achieved": 1791.0, "pct": 0.0, "months": 20}, {"id": "100543", "name": "JITENDRA", "branch": "INH_JOS", "manager": "OMKAR S", "status": "Inactive", "doj": "11-Jun-2025", "target": 3600000.0, "achieved": 345672.0, "pct": 9.6, "months": 20}, {"id": "100545", "name": "JAYESH", "branch": "INH_DADAR", "manager": "SMITA", "status": "Inactive", "doj": "11-Jan-2025", "target": 1750000.0, "achieved": 239764.0, "pct": 13.7, "months": 14}, {"id": "100563", "name": "RAHUL", "branch": "INH_DADAR", "manager": "SMITA", "status": "Inactive", "doj": "N/A", "target": 2890000.0, "achieved": 692533.0, "pct": 24.0, "months": 14}, {"id": "100564", "name": "ASHISH", "branch": "INH_JOS", "manager": "OMKAR S", "status": "Inactive", "doj": "12-Jan-2025", "target": 4000000.0, "achieved": 43057.0, "pct": 1.1, "months": 20}, {"id": "100566", "name": "GOWTHAM", "branch": "INH_DADAR", "manager": "SMITA", "status": "Inactive", "doj": "12-Feb-2025", "target": 2800000.0, "achieved": 207545.0, "pct": 7.4, "months": 14}, {"id": "100567", "name": "DINESH", "branch": "INH_JOS", "manager": "AMBUJ T", "status": "Inactive", "doj": "12-Apr-2025", "target": 4600000.0, "achieved": 0.0, "pct": 0.0, "months": 20}, {"id": "100569", "name": "POOJA D", "branch": "INH_DADAR", "manager": "SMITA", "status": "Inactive", "doj": "N/A", "target": 2100000.0, "achieved": 210563.0, "pct": 10.0, "months": 14}, {"id": "100575", "name": "ROHIT", "branch": "INH_JOS", "manager": "OMKAR S", "status": "Inactive", "doj": "01-Sep-2026", "target": 4800000.0, "achieved": 28597.0, "pct": 0.6, "months": 20}, {"id": "100576", "name": "NANDINIPRIYA", "branch": "INH_JOS", "manager": "ADITI", "status": "Inactive", "doj": "01-Dec-2026", "target": 4400000.0, "achieved": 166475.0, "pct": 3.8, "months": 20}, {"id": "100577", "name": "NILAM", "branch": "INH_DADAR", "manager": "SMITA", "status": "Inactive", "doj": "N/A", "target": 3060000.0, "achieved": 321329.0, "pct": 10.5, "months": 14}, {"id": "100579", "name": "SHIVANI V", "branch": "INH_DADAR", "manager": "SMITA", "status": "Inactive", "doj": "02-Mar-2026", "target": 0.0, "achieved": 0.0, "pct": 0, "months": 14}, {"id": "100582", "name": "JANVI D", "branch": "INH_DADAR", "manager": "SMITA", "status": "Inactive", "doj": "02-Mar-2026", "target": 1750000.0, "achieved": 10620.0, "pct": 0.6, "months": 14}, {"id": "100585", "name": "THIYAGRAJAN", "branch": "INH_JOS", "manager": "OMKAR S", "status": "Inactive", "doj": "N/A", "target": 4800000.0, "achieved": 121809.0, "pct": 2.5, "months": 20}, {"id": "100587", "name": "SHRAVAN", "branch": "INH_JOS", "manager": "ADITI", "status": "Inactive", "doj": "N/A", "target": 3200000.0, "achieved": 145498.0, "pct": 4.5, "months": 20}, {"id": "100588", "name": "RUTUJA K", "branch": "INH_DADAR", "manager": "SMITA", "status": "Inactive", "doj": "03-Nov-2026", "target": 2180000.0, "achieved": 23150.0, "pct": 1.1, "months": 14}, {"id": "100589", "name": "SANSKRUTI G", "branch": "INH_DADAR", "manager": "SMITA", "status": "Inactive", "doj": "03-Dec-2026", "target": 1400000.0, "achieved": 0.0, "pct": 0.0, "months": 14}, {"id": "100592", "name": "VANDANA K", "branch": "INH_DADAR", "manager": "SMITA", "status": "Inactive", "doj": "N/A", "target": 2960000.0, "achieved": 100914.0, "pct": 3.4, "months": 14}, {"id": "100004", "name": "SATISH P", "branch": "AGENCY", "manager": "SATISH P", "status": "Active", "doj": "02-Jan-2024", "target": 4400000.0, "achieved": 339708.0, "pct": 7.7, "months": 22}, {"id": "100404", "name": "DIPALI PATIL", "branch": "INH_DADAR", "manager": "SMITA", "status": "Active", "doj": "N/A", "target": 4160000.0, "achieved": 298867.0, "pct": 7.2, "months": 16}, {"id": "100406", "name": "JAYESH SHINDE", "branch": "INH_DADAR", "manager": "SMITA", "status": "Active", "doj": "N/A", "target": 2880000.0, "achieved": 114050.0, "pct": 4.0, "months": 16}, {"id": "100407", "name": "DARSHANA", "branch": "INH_JOS", "manager": "AMBUJ T", "status": "Active", "doj": "N/A", "target": 6059200.0, "achieved": 3574010.0, "pct": 59.0, "months": 21}, {"id": "100407", "name": "DARSHANA", "branch": "INH_JOS", "manager": "AMBUJ TRIPATHI", "status": "Active", "doj": "N/A", "target": 300000.0, "achieved": 137375.0, "pct": 45.8, "months": 1}, {"id": "100407", "name": "DARSHANA MAHADIK", "branch": "INH_JOS", "manager": "AMBUJ TRIPATHI", "status": "Active", "doj": "N/A", "target": 300000.0, "achieved": 510287.0, "pct": 170.1, "months": 1}, {"id": "100408", "name": "SHRAVANTHI PATTHEM (Manager)", "branch": "INH_JOS", "manager": "SHRAVANTI", "status": "Active", "doj": "N/A", "target": 0.0, "achieved": 0.0, "pct": 0, "months": 1}, {"id": "100408", "name": "SHRAVANTI", "branch": "INH_JOS", "manager": "SHRAVANTI", "status": "Active", "doj": "N/A", "target": 8520000.0, "achieved": 2876908.0, "pct": 33.8, "months": 22}, {"id": "100409", "name": "MD NASIRUL", "branch": "INH_JOS", "manager": "AMBUJ TRIPATHI", "status": "Active", "doj": "11-Apr-2024", "target": 264000.0, "achieved": 337133.0, "pct": 127.7, "months": 1}, {"id": "100409", "name": "NASIRUL", "branch": "INH_JOS", "manager": "AMBUJ T", "status": "Active", "doj": "11-Apr-2024", "target": 5136000.0, "achieved": 3745935.0, "pct": 72.9, "months": 21}, {"id": "100409", "name": "NASIRUL", "branch": "INH_JOS", "manager": "AMBUJ TRIPATHI", "status": "Active", "doj": "11-Apr-2024", "target": 264000.0, "achieved": 193900.0, "pct": 73.4, "months": 1}, {"id": "100410", "name": "VIDYA C", "branch": "INH_JOS", "manager": "AMBUJ T", "status": "Active", "doj": "11-Nov-2024", "target": 7561000.0, "achieved": 6273244.0, "pct": 83.0, "months": 21}, {"id": "100410", "name": "VIDYA C", "branch": "INH_JOS", "manager": "AMBUJ TRIPATHI", "status": "Active", "doj": "11-Nov-2024", "target": 403000.0, "achieved": 681072.0, "pct": 169.0, "months": 1}, {"id": "100410", "name": "VIDYA CHOUGULE", "branch": "INH_JOS", "manager": "AMBUJ TRIPATHI", "status": "Active", "doj": "11-Nov-2024", "target": 403000.0, "achieved": 446276.0, "pct": 110.7, "months": 1}, {"id": "100411", "name": "SUHANI", "branch": "INH_JOS", "manager": "AMBUJ T", "status": "Active", "doj": "11-Nov-2024", "target": 3488000.0, "achieved": 4357242.0, "pct": 124.9, "months": 21}, {"id": "100411", "name": "SUHANI", "branch": "INH_JOS", "manager": "AMBUJ TRIPATHI", "status": "Active", "doj": "11-Nov-2024", "target": 192000.0, "achieved": 151704.0, "pct": 79.0, "months": 1}, {"id": "100411", "name": "SUHANI GAUD", "branch": "INH_JOS", "manager": "AMBUJ TRIPATHI", "status": "Active", "doj": "11-Nov-2024", "target": 192000.0, "achieved": 420969.0, "pct": 219.3, "months": 1}, {"id": "100417", "name": "AMBUJ TRIPATHI", "branch": "INH_JOS", "manager": "AMBUJ T", "status": "Active", "doj": "11-Nov-2024", "target": 0.0, "achieved": 0.0, "pct": 0, "months": 21}, {"id": "100417", "name": "AMBUJ TRIPATHI", "branch": "INH_JOS", "manager": "AMBUJ TRIPATHI", "status": "Active", "doj": "11-Nov-2024", "target": 0.0, "achieved": 0.0, "pct": 0, "months": 1}, {"id": "100417", "name": "AMBUJ TRIPATHI (Manager)", "branch": "INH_JOS", "manager": "AMBUJ TRIPATHI", "status": "Active", "doj": "11-Nov-2024", "target": 0.0, "achieved": 0.0, "pct": 0, "months": 1}, {"id": "100420", "name": "OMKAR SINGH", "branch": "INH_JOS", "manager": "OMKAR S", "status": "Active", "doj": "N/A", "target": 0.0, "achieved": 106067.0, "pct": 0, "months": 21}, {"id": "100420", "name": "OMKAR SINGH", "branch": "INH_JOS", "manager": "OMKAR SINGH", "status": "Active", "doj": "N/A", "target": 0.0, "achieved": 0.0, "pct": 0, "months": 1}, {"id": "100420", "name": "OMKAR SINGH (Manager)", "branch": "INH_JOS", "manager": "OMKAR SINGH", "status": "Active", "doj": "N/A", "target": 0.0, "achieved": 0.0, "pct": 0, "months": 1}, {"id": "100442", "name": "POONAM INDULKAR (Manager)", "branch": "AGENCY", "manager": "POONAM INDULKAR", "status": "Active", "doj": "N/A", "target": 0.0, "achieved": 0.0, "pct": 0, "months": 1}, {"id": "100445", "name": "RADHAKRISHNA", "branch": "INH_JOS", "manager": "AMBUJ TRIPATHI", "status": "Active", "doj": "N/A", "target": 226000.0, "achieved": 365048.0, "pct": 161.5, "months": 1}, {"id": "100445", "name": "RADHAKRISHNAN", "branch": "INH_JOS", "manager": "AMBUJ T", "status": "Active", "doj": "N/A", "target": 4551400.0, "achieved": 2403355.0, "pct": 52.8, "months": 21}, {"id": "100445", "name": "RADHAKRISHNAN", "branch": "INH_JOS", "manager": "AMBUJ TRIPATHI", "status": "Active", "doj": "N/A", "target": 300000.0, "achieved": 121739.0, "pct": 40.6, "months": 1}, {"id": "100449", "name": "ABHISHEK", "branch": "INH_JOS", "manager": "OMKAR S", "status": "Inactive", "doj": "N/A", "target": 4000000.0, "achieved": 1341329.0, "pct": 33.5, "months": 20}, {"id": "100452", "name": "KALPESH", "branch": "INH_JOS", "manager": "OMKAR S", "status": "Active", "doj": "N/A", "target": 4720000.0, "achieved": 2419859.0, "pct": 51.3, "months": 21}, {"id": "100452", "name": "KALPESH", "branch": "INH_JOS", "manager": "OMKAR SINGH", "status": "Active", "doj": "N/A", "target": 460000.0, "achieved": 358603.0, "pct": 78.0, "months": 2}, {"id": "100463", "name": "PRASAD", "branch": "INH_JOS", "manager": "OMKAR SINGH", "status": "Active", "doj": "04-Jan-2025", "target": 0.0, "achieved": 53918.0, "pct": 0, "months": 1}, {"id": "100476", "name": "PRIYA", "branch": "INH_JOS", "manager": "OMKAR S", "status": "Active", "doj": "05-Dec-2025", "target": 7040000.0, "achieved": 4072678.0, "pct": 57.9, "months": 21}, {"id": "100476", "name": "PRIYA", "branch": "INH_JOS", "manager": "OMKAR SINGH", "status": "Active", "doj": "05-Dec-2025", "target": 704000.0, "achieved": 622429.0, "pct": 88.4, "months": 2}, {"id": "100478", "name": "ADITI", "branch": "INH_JOS", "manager": "ADITI", "status": "Active", "doj": "N/A", "target": 0.0, "achieved": 0.0, "pct": 0, "months": 1}, {"id": "100478", "name": "ADITI", "branch": "INH_JOS", "manager": "ADITI", "status": "Inactive", "doj": "N/A", "target": 0.0, "achieved": 1.0, "pct": 0, "months": 21}, {"id": "100478", "name": "ADITI (Manager)", "branch": "INH_JOS", "manager": "ADITI", "status": "Active", "doj": "N/A", "target": 0.0, "achieved": 0.0, "pct": 0, "months": 1}, {"id": "100480", "name": "SMITA", "branch": "INH_DADAR", "manager": "SMITA", "status": "Active", "doj": "N/A", "target": 0.0, "achieved": 98003.0, "pct": 0, "months": 16}, {"id": "100480", "name": "SMITA (Manager)", "branch": "INH_DADAR", "manager": "SMITA", "status": "Active", "doj": "N/A", "target": 0.0, "achieved": 0.0, "pct": 0, "months": 1}, {"id": "100481", "name": "SUHANA SHAIKH", "branch": "INH_DADAR", "manager": "SMITA", "status": "Active", "doj": "N/A", "target": 3594000.0, "achieved": 2790393.5, "pct": 77.6, "months": 17}, {"id": "100482", "name": "RAJ SAKPAL", "branch": "INH_DADAR", "manager": "SMITA", "status": "Active", "doj": "N/A", "target": 3312500.0, "achieved": 2556947.5, "pct": 77.2, "months": 17}, {"id": "100483", "name": "KIRAN", "branch": "INH_JOS", "manager": "ADITI", "status": "Active", "doj": "N/A", "target": 204000.0, "achieved": 204195.0, "pct": 100.1, "months": 1}, {"id": "100483", "name": "KIRAN SINGH", "branch": "INH_JOS", "manager": "ADITI", "status": "Active", "doj": "N/A", "target": 4147600.0, "achieved": 1869822.0, "pct": 45.1, "months": 22}, {"id": "100489", "name": "SASIKALA", "branch": "INH_JOS", "manager": "AMBUJ TRIPATHI", "status": "Active", "doj": "06-Mar-2025", "target": 230000.0, "achieved": 49573.0, "pct": 21.6, "months": 1}, {"id": "100489", "name": "SASIKALA K", "branch": "INH_JOS", "manager": "AMBUJ T", "status": "Inactive", "doj": "06-Mar-2025", "target": 4540000.0, "achieved": 1207037.0, "pct": 26.6, "months": 21}, {"id": "100489", "name": "SASIKALA K", "branch": "INH_JOS", "manager": "AMBUJ TRIPATHI", "status": "Active", "doj": "06-Mar-2025", "target": 0.0, "achieved": 65000.0, "pct": 0, "months": 1}, {"id": "100490", "name": "ROOPKALA", "branch": "INH_JOS", "manager": "AMBUJ T", "status": "Active", "doj": "06-Mar-2025", "target": 5525000.0, "achieved": 3728202.0, "pct": 67.5, "months": 21}, {"id": "100490", "name": "ROOPKALA", "branch": "INH_JOS", "manager": "AMBUJ TRIPATHI", "status": "Active", "doj": "06-Mar-2025", "target": 550000.0, "achieved": 385805.0, "pct": 70.1, "months": 2}, {"id": "100492", "name": "KALPITA RIKAME", "branch": "INH_DADAR", "manager": "SMITA", "status": "Active", "doj": "06-Apr-2025", "target": 4153000.0, "achieved": 3281395.0, "pct": 79.0, "months": 17}, {"id": "100493", "name": "NIDHI KADAM", "branch": "INH_DADAR", "manager": "SMITA", "status": "Active", "doj": "06-Jun-2025", "target": 3652000.0, "achieved": 3222061.0, "pct": 88.2, "months": 17}, {"id": "100495", "name": "MANISHA", "branch": "INH_JOS", "manager": "AMBUJ T", "status": "Active", "doj": "06-Sep-2025", "target": 5548800.0, "achieved": 2411711.0, "pct": 43.5, "months": 20}, {"id": "100497", "name": "MANISH", "branch": "INH_JOS", "manager": "ADITI", "status": "Active", "doj": "06-Sep-2025", "target": 275000.0, "achieved": 275906.0, "pct": 100.3, "months": 1}, {"id": "100497", "name": "MANISH KUMAR", "branch": "INH_JOS", "manager": "ADITI", "status": "Active", "doj": "06-Sep-2025", "target": 5800000.0, "achieved": 3486081.0, "pct": 60.1, "months": 22}, {"id": "100499", "name": "ATHARV SALVI", "branch": "INH_JOS", "manager": "ADITI", "status": "Inactive", "doj": "N/A", "target": 3520000.0, "achieved": 820515.0, "pct": 23.3, "months": 20}, {"id": "100500", "name": "PURVA SHIRKE", "branch": "INH_JOS", "manager": "ADITI", "status": "Active", "doj": "07-Feb-2025", "target": 5757400.0, "achieved": 2504160.0, "pct": 43.5, "months": 23}, {"id": "100501", "name": "AYUSH PATEL", "branch": "INH_JOS", "manager": "ADITI", "status": "Inactive", "doj": "07-Feb-2025", "target": 3680000.0, "achieved": 269494.0, "pct": 7.3, "months": 20}, {"id": "100511", "name": "DIPALI PATNAYAK", "branch": "INH_DADAR", "manager": "SMITA", "status": "Active", "doj": "09-Jan-2025", "target": 4140000.0, "achieved": 2225394.0, "pct": 53.8, "months": 17}, {"id": "100512", "name": "SANKET", "branch": "INH_JOS", "manager": "OMKAR S", "status": "Inactive", "doj": "09-Jan-2025", "target": 3600000.0, "achieved": 528768.0, "pct": 14.7, "months": 20}, {"id": "100519", "name": "VARSHA RIKAME", "branch": "INH_JOS", "manager": "ADITI", "status": "Active", "doj": "09-Nov-2025", "target": 4538500.0, "achieved": 1561163.0, "pct": 34.4, "months": 23}, {"id": "100534", "name": "TUSHAR", "branch": "INH_JOS", "manager": "SHRAVANTI", "status": "Active", "doj": "10-Sep-2025", "target": 220000.0, "achieved": 154000.0, "pct": 70.0, "months": 1}, {"id": "100534", "name": "TUSHAR C", "branch": "INH_JOS", "manager": "SHRAVANTI", "status": "Active", "doj": "10-Sep-2025", "target": 4840000.0, "achieved": 1434190.0, "pct": 29.6, "months": 22}, {"id": "100535", "name": "AASHISH S", "branch": "INH_JOS", "manager": "SHRAVANTI", "status": "Inactive", "doj": "N/A", "target": 4800000.0, "achieved": 52562.0, "pct": 1.1, "months": 20}, {"id": "100536", "name": "SRUSHTI", "branch": "INH_JOS", "manager": "SHRAVANTI", "status": "Active", "doj": "N/A", "target": 300000.0, "achieved": 211225.0, "pct": 70.4, "months": 1}, {"id": "100536", "name": "SRUSHTI S", "branch": "INH_JOS", "manager": "SHRAVANTI", "status": "Active", "doj": "N/A", "target": 6500000.0, "achieved": 1977966.0, "pct": 30.4, "months": 22}, {"id": "100537", "name": "AARTI", "branch": "INH_JOS", "manager": "SHRAVANTI", "status": "Active", "doj": "N/A", "target": 280000.0, "achieved": 280204.0, "pct": 100.1, "months": 1}, {"id": "100537", "name": "AARTI G", "branch": "INH_JOS", "manager": "SHRAVANTI", "status": "Active", "doj": "N/A", "target": 6160000.0, "achieved": 3448861.0, "pct": 56.0, "months": 22}, {"id": "100538", "name": "JYOTI", "branch": "INH_JOS", "manager": "SHRAVANTI", "status": "Active", "doj": "N/A", "target": 250000.0, "achieved": 268851.0, "pct": 107.5, "months": 1}, {"id": "100538", "name": "JYOTI Z", "branch": "INH_JOS", "manager": "SHRAVANTI", "status": "Active", "doj": "N/A", "target": 5500000.0, "achieved": 2348251.0, "pct": 42.7, "months": 22}, {"id": "100541", "name": "URMILA", "branch": "INH_JOS", "manager": "ADITI", "status": "Active", "doj": "11-May-2025", "target": 211000.0, "achieved": 22704.0, "pct": 10.8, "months": 1}, {"id": "100541", "name": "URMILA TAMBE", "branch": "INH_JOS", "manager": "ADITI", "status": "Active", "doj": "11-May-2025", "target": 4634000.0, "achieved": 1112907.0, "pct": 24.0, "months": 22}, {"id": "100547", "name": "KUNAL", "branch": "INH_DADAR", "manager": "SMITA", "status": "Active", "doj": "11-Jan-2025", "target": 220000.0, "achieved": 94585.0, "pct": 43.0, "months": 1}, {"id": "100547", "name": "KUNAL GHOSALKAR", "branch": "INH_DADAR", "manager": "SMITA", "status": "Active", "doj": "11-Jan-2025", "target": 3390000.0, "achieved": 707806.0, "pct": 20.9, "months": 16}, {"id": "100548", "name": "ANKITA BAVASKAR", "branch": "INH_DADAR", "manager": "SMITA", "status": "Active", "doj": "N/A", "target": 170000.0, "achieved": 124448.0, "pct": 73.2, "months": 1}, {"id": "100548", "name": "ANKITA BAWASKAR", "branch": "INH_DADAR", "manager": "SMITA", "status": "Active", "doj": "N/A", "target": 2680000.0, "achieved": 829924.0, "pct": 31.0, "months": 16}, {"id": "100549", "name": "RADHIKA GUPTA", "branch": "INH_DADAR", "manager": "SMITA", "status": "Active", "doj": "11-Jan-2025", "target": 3610000.0, "achieved": 1735032.0, "pct": 48.1, "months": 17}, {"id": "100550", "name": "DEEPIKA SONAR", "branch": "INH_DADAR", "manager": "SMITA", "status": "Active", "doj": "11-Apr-2025", "target": 2650500.0, "achieved": 1038744.0, "pct": 39.2, "months": 17}, {"id": "100558", "name": "VIDYA S", "branch": "INH_JOS", "manager": "OMKAR S", "status": "Active", "doj": "N/A", "target": 4425000.0, "achieved": 1477063.0, "pct": 33.4, "months": 21}, {"id": "100558", "name": "VIDYA S", "branch": "INH_JOS", "manager": "OMKAR SINGH", "status": "Active", "doj": "N/A", "target": 210000.0, "achieved": 147642.0, "pct": 70.3, "months": 1}, {"id": "100558", "name": "VIDYA S", "branch": "INH_JOS", "manager": "SHWETA", "status": "Active", "doj": "N/A", "target": 211000.0, "achieved": 3200.0, "pct": 1.5, "months": 1}, {"id": "100560", "name": "SIDDHARTH", "branch": "INH_DADAR", "manager": "SMITA", "status": "Active", "doj": "N/A", "target": 220000.0, "achieved": 220887.0, "pct": 100.4, "months": 1}, {"id": "100560", "name": "SIDDHARTH W", "branch": "INH_DADAR", "manager": "SMITA", "status": "Active", "doj": "N/A", "target": 3230000.0, "achieved": 506429.0, "pct": 15.7, "months": 16}, {"id": "100562", "name": "SHALINI", "branch": "INH_JOS", "manager": "ADITI", "status": "Active", "doj": "N/A", "target": 190000.0, "achieved": 134402.0, "pct": 70.7, "months": 1}, {"id": "100562", "name": "SHALINI R", "branch": "INH_JOS", "manager": "ADITI", "status": "Active", "doj": "N/A", "target": 4180000.0, "achieved": 1189191.0, "pct": 28.4, "months": 22}, {"id": "100570", "name": "PRAJAKTA TIKUDAVE", "branch": "INH_DADAR", "manager": "SMITA", "status": "Active", "doj": "01-Feb-2026", "target": 220000.0, "achieved": 156116.0, "pct": 71.0, "months": 1}, {"id": "100570", "name": "PRAJAKTA TIKUDVE", "branch": "INH_DADAR", "manager": "SMITA", "status": "Active", "doj": "01-Feb-2026", "target": 3400000.0, "achieved": 1466214.0, "pct": 43.1, "months": 16}, {"id": "100572", "name": "SIDDHESH", "branch": "INH_JOS", "manager": "ADITI", "status": "Inactive", "doj": "N/A", "target": 3100000.0, "achieved": 204845.0, "pct": 6.6, "months": 20}, {"id": "100573", "name": "SAROJ", "branch": "INH_JOS", "manager": "SAROJ", "status": "Active", "doj": "N/A", "target": 19400000.0, "achieved": 3354892.0, "pct": 17.3, "months": 23}, {"id": "100574", "name": "RIZIYA", "branch": "INH_JOS", "manager": "AMBUJ T", "status": "Inactive", "doj": "01-Aug-2026", "target": 5000000.0, "achieved": 297877.0, "pct": 6.0, "months": 20}, {"id": "100577", "name": "ARCHITA PATIL", "branch": "INH_JOS", "manager": "AMBUJ T", "status": "Inactive", "doj": "N/A", "target": 3200000.0, "achieved": 0.0, "pct": 0.0, "months": 20}, {"id": "100578", "name": "KARAN", "branch": "INH_JOS", "manager": "OMKAR S", "status": "Active", "doj": "N/A", "target": 3990000.0, "achieved": 882606.0, "pct": 22.1, "months": 21}, {"id": "100578", "name": "KARAN", "branch": "INH_JOS", "manager": "OMKAR SINGH", "status": "Active", "doj": "N/A", "target": 380000.0, "achieved": 271005.0, "pct": 71.3, "months": 2}, {"id": "100591", "name": "SANKET H", "branch": "INH_JOS", "manager": "OMKAR S", "status": "Inactive", "doj": "03-Nov-2026", "target": 3800000.0, "achieved": 14499.0, "pct": 0.4, "months": 20}, {"id": "100593", "name": "PRIYANKA", "branch": "INH_JOS", "manager": "OMKAR S", "status": "Inactive", "doj": "N/A", "target": 4400000.0, "achieved": 247889.0, "pct": 5.6, "months": 20}, {"id": "100593", "name": "PRIYANKA .M", "branch": "INH_JOS", "manager": "ADITI", "status": "Active", "doj": "N/A", "target": 0.0, "achieved": 16934.0, "pct": 0, "months": 1}, {"id": "100593", "name": "PRIYANKA M", "branch": "INH_JOS", "manager": "AMBUJ T", "status": "Inactive", "doj": "N/A", "target": 4620000.0, "achieved": 80873.0, "pct": 1.8, "months": 21}, {"id": "100597", "name": "KUMAR", "branch": "INH_JOS", "manager": "SHRAVANTI", "status": "Active", "doj": "04-Feb-2026", "target": 530000.0, "achieved": 282178.0, "pct": 53.2, "months": 2}, {"id": "100597", "name": "KUMAR ", "branch": "INH_JOS", "manager": "SHRAVANTI", "status": "Active", "doj": "04-Feb-2026", "target": 1120000.0, "achieved": 736100.0, "pct": 65.7, "months": 4}, {"id": "100598", "name": "SHWETA", "branch": "INH_JOS", "manager": "SHWETA", "status": "Active", "doj": "04-Jun-2026", "target": 800000.0, "achieved": 376278.0, "pct": 47.0, "months": 5}, {"id": "100598", "name": "SHWETA (Manager)", "branch": "INH_JOS", "manager": "SHWETA", "status": "Active", "doj": "04-Jun-2026", "target": 0.0, "achieved": 0.0, "pct": 0, "months": 1}, {"id": "100603", "name": "MINAJ", "branch": "INH_JOS", "manager": "SHWETA", "status": "Active", "doj": "N/A", "target": 200000.0, "achieved": 166648.0, "pct": 83.3, "months": 1}, {"id": "100603", "name": "MINAJ MULLA", "branch": "INH_JOS", "manager": "SHWETA", "status": "Active", "doj": "N/A", "target": 4400000.0, "achieved": 402450.0, "pct": 9.1, "months": 22}, {"id": "100604", "name": "SUNIL", "branch": "INH_DADAR", "manager": "SMITA", "status": "Active", "doj": "N/A", "target": 5100000.0, "achieved": 363593.0, "pct": 7.1, "months": 17}, {"id": "100606", "name": "SAGAR GAONKAR", "branch": "INH_DADAR", "manager": "SMITA", "status": "Inactive", "doj": "05-Aug-2026", "target": 2808000.0, "achieved": 834715.0, "pct": 29.7, "months": 14}, {"id": "100606", "name": "SAGAR GAONKAR", "branch": "INH_JOS", "manager": "SHWETA", "status": "Active", "doj": "05-Aug-2026", "target": 500000.0, "achieved": 397062.0, "pct": 79.4, "months": 2}, {"id": "100606", "name": "SAGAR SALAVI", "branch": "INH_JOS", "manager": "SHWETA", "status": "Active", "doj": "05-Aug-2026", "target": 5250000.0, "achieved": 380781.0, "pct": 7.3, "months": 21}, {"id": "100609", "name": "ANAND MORE", "branch": "INH_JOS", "manager": "OMKAR S", "status": "Active", "doj": "06-Jan-2026", "target": 4620000.0, "achieved": 54935.0, "pct": 1.2, "months": 21}, {"id": "100609", "name": "ANAND MORE", "branch": "INH_JOS", "manager": "OMKAR SINGH", "status": "Active", "doj": "06-Jan-2026", "target": 220000.0, "achieved": 0.0, "pct": 0.0, "months": 1}, {"id": "100610", "name": "LAUKIK VELENKAR", "branch": "INH_JOS", "manager": "OMKAR S", "status": "Active", "doj": "06-Feb-2026", "target": 4620000.0, "achieved": 53792.0, "pct": 1.2, "months": 21}, {"id": "100610", "name": "LAUKIK VELENKAR", "branch": "INH_JOS", "manager": "OMKAR SINGH", "status": "Active", "doj": "06-Feb-2026", "target": 0.0, "achieved": 0.0, "pct": 0, "months": 1}, {"id": "100611", "name": "ABHISHEK OVALE", "branch": "INH_JOS", "manager": "SHWETA", "status": "Active", "doj": "N/A", "target": 720000.0, "achieved": 688770.0, "pct": 95.7, "months": 3}, {"id": "100612", "name": "SAGAR B", "branch": "INH_JOS", "manager": "AMBUJ T", "status": "Active", "doj": "06-May-2026", "target": 280000.0, "achieved": 35473.0, "pct": 12.7, "months": 1}, {"id": "100612", "name": "SAGAR B", "branch": "INH_JOS", "manager": "AMBUJ TRIPATHI", "status": "Active", "doj": "06-May-2026", "target": 280000.0, "achieved": 24000.0, "pct": 8.6, "months": 1}, {"id": "100613", "name": "MUKESH", "branch": "INH_JOS", "manager": "ADITI", "status": "Active", "doj": "06-Nov-2026", "target": 400000.0, "achieved": 135837.0, "pct": 34.0, "months": 2}, {"id": "100613", "name": "MUKESH MAURYA", "branch": "INH_JOS", "manager": "ADITI", "status": "Active", "doj": "06-Nov-2026", "target": 200000.0, "achieved": 142159.0, "pct": 71.1, "months": 1}, {"id": "100614", "name": "DIPALI PARAB", "branch": "INH_DADAR", "manager": "SMITA", "status": "Active", "doj": "N/A", "target": 260000.0, "achieved": 210556.0, "pct": 81.0, "months": 1}, {"id": "100615", "name": "JAYESH SHINDE", "branch": "INH_DADAR", "manager": "SMITA", "status": "Active", "doj": "N/A", "target": 180000.0, "achieved": 73137.0, "pct": 40.6, "months": 1}, {"id": "100616", "name": "YOGITA GAIKWAD", "branch": "INH_DADAR", "manager": "SMITA", "status": "Active", "doj": "06-Dec-2026", "target": 4080000.0, "achieved": 401387.0, "pct": 9.8, "months": 17}, {"id": "100617", "name": "SHIVA", "branch": "INH_JOS", "manager": "OMKAR S", "status": "Active", "doj": "N/A", "target": 240000.0, "achieved": 81116.0, "pct": 33.8, "months": 1}, {"id": "100617", "name": "SHIVA", "branch": "INH_JOS", "manager": "OMKAR SINGH", "status": "Active", "doj": "N/A", "target": 240000.0, "achieved": 24700.0, "pct": 10.3, "months": 1}, {"id": "100618", "name": "SHWETA L", "branch": "INH_JOS", "manager": "SHRAVANTI", "status": "Active", "doj": "N/A", "target": 270000.0, "achieved": 0.0, "pct": 0.0, "months": 1}, {"id": "100618", "name": "SHWETHA", "branch": "INH_JOS", "manager": "SHRAVANTI", "status": "Active", "doj": "N/A", "target": 840000.0, "achieved": 0.0, "pct": 0.0, "months": 3}, {"id": "100620", "name": "PRIYANKA PATIL", "branch": "INH_DADAR", "manager": "SMITA", "status": "Active", "doj": "N/A", "target": 460000.0, "achieved": 151714.0, "pct": 33.0, "months": 2}, {"id": "100623", "name": "PARTHASARTHI", "branch": "INH_JOS", "manager": "OMKAR SINGH", "status": "Active", "doj": "N/A", "target": 0.0, "achieved": 25041.0, "pct": 0, "months": 1}, {"id": "100623", "name": "PARTHASARTHI", "branch": "INH_JOS", "manager": "SHRAVANTI", "status": "Active", "doj": "N/A", "target": 430000.0, "achieved": 0.0, "pct": 0.0, "months": 2}, {"id": "100625", "name": "KAVITA NAIK", "branch": "INH_JOS", "manager": "AMBUJ T", "status": "Active", "doj": "07-Jan-2026", "target": 280000.0, "achieved": 0.0, "pct": 0.0, "months": 1}, {"id": "100625", "name": "KAVITA NAIK", "branch": "INH_JOS", "manager": "AMBUJ TRIPATHI", "status": "Active", "doj": "07-Jan-2026", "target": 280000.0, "achieved": 105200.0, "pct": 37.6, "months": 1}, {"id": "100626", "name": "PRANJAL RIKAME", "branch": "INH_JOS", "manager": "AMBUJ T", "status": "Active", "doj": "07-Jan-2026", "target": 280000.0, "achieved": 125000.0, "pct": 44.6, "months": 1}, {"id": "100626", "name": "PRANJAL RIKAME", "branch": "INH_JOS", "manager": "AMBUJ TRIPATHI", "status": "Active", "doj": "07-Jan-2026", "target": 560000.0, "achieved": 287950.0, "pct": 51.4, "months": 2}, {"id": "100627", "name": "IRAMMA", "branch": "INH_JOS", "manager": "AMBUJ TRIPATHI", "status": "Active", "doj": "07-Jun-2026", "target": 390000.0, "achieved": 294221.0, "pct": 75.4, "months": 1}, {"id": "100627", "name": "IRAMMA U", "branch": "INH_JOS", "manager": "AMBUJ T", "status": "Active", "doj": "07-Jun-2026", "target": 390000.0, "achieved": 113965.0, "pct": 29.2, "months": 1}, {"id": "100627", "name": "IRAMMA U", "branch": "INH_JOS", "manager": "AMBUJ TRIPATHI", "status": "Active", "doj": "07-Jun-2026", "target": 200000.0, "achieved": 134900.0, "pct": 67.5, "months": 1}, {"id": "100629", "name": "MAHESHWARI", "branch": "INH_JOS", "manager": "OMKAR S", "status": "Active", "doj": "07-Jun-2026", "target": 260000.0, "achieved": 7500.0, "pct": 2.9, "months": 1}, {"id": "100629", "name": "MAHESHWARI", "branch": "INH_JOS", "manager": "OMKAR SINGH", "status": "Active", "doj": "07-Jun-2026", "target": 520000.0, "achieved": 184242.0, "pct": 35.4, "months": 2}, {"id": "100630", "name": "NEENA", "branch": "INH_JOS", "manager": "SHRAVANTI", "status": "Active", "doj": "07-Jun-2026", "target": 280000.0, "achieved": 79710.0, "pct": 28.5, "months": 1}, {"id": "100630", "name": "NEENA ROKADE", "branch": "INH_JOS", "manager": "SHRAVANTI", "status": "Active", "doj": "07-Jun-2026", "target": 280000.0, "achieved": 55000.0, "pct": 19.6, "months": 2}, {"id": "100632", "name": "DEVYANI", "branch": "INH_JOS", "manager": "AMBUJ TRIPATHI", "status": "Active", "doj": "07-Aug-2026", "target": 280000.0, "achieved": 0.0, "pct": 0.0, "months": 1}, {"id": "100632", "name": "DEVYANI V.", "branch": "INH_JOS", "manager": "AMBUJ T", "status": "Active", "doj": "07-Aug-2026", "target": 0.0, "achieved": 39866.0, "pct": 0, "months": 1}, {"id": "100632", "name": "DEVYANI V.", "branch": "INH_JOS", "manager": "AMBUJ TRIPATHI", "status": "Active", "doj": "07-Aug-2026", "target": 280000.0, "achieved": 35924.0, "pct": 12.8, "months": 1}, {"id": "100633", "name": "POOJA PATEL", "branch": "INH_JOS", "manager": "SHRAVANTI", "status": "Active", "doj": "07-Sep-2026", "target": 490000.0, "achieved": 100001.0, "pct": 20.4, "months": 3}, {"id": "100634", "name": "AMRINA", "branch": "INH_JOS", "manager": "SHRAVANTI", "status": "Active", "doj": "N/A", "target": 220000.0, "achieved": 0.0, "pct": 0.0, "months": 1}, {"id": "100635", "name": "DIVYA GITE", "branch": "INH_JOS", "manager": "SHWETA", "status": "Active", "doj": "N/A", "target": 260000.0, "achieved": 0.0, "pct": 0.0, "months": 1}, {"id": "100636", "name": "INDUMATI TEVAR", "branch": "INH_DADAR", "manager": "SMITA", "status": "Active", "doj": "N/A", "target": 280000.0, "achieved": 0.0, "pct": 0.0, "months": 1}, {"id": "100637", "name": "PRIYANKA MASKE", "branch": "INH_JOS", "manager": "ADITI", "status": "Active", "doj": "N/A", "target": 200000.0, "achieved": 28198.0, "pct": 14.1, "months": 1}, {"id": "100638", "name": "NEHA JADHAV", "branch": "INH_JOS", "manager": "OMKAR SINGH", "status": "Active", "doj": "08-Oct-2026", "target": 210000.0, "achieved": 40646.0, "pct": 19.4, "months": 1}, {"id": "100639", "name": "RUSHIKA", "branch": "INH_JOS", "manager": "AMBUJ TRIPATHI", "status": "Active", "doj": "N/A", "target": 300000.0, "achieved": 22000.0, "pct": 7.3, "months": 1}, {"id": "100639", "name": "RUSHIKA J.", "branch": "INH_JOS", "manager": "AMBUJ TRIPATHI", "status": "Active", "doj": "N/A", "target": 200000.0, "achieved": 0.0, "pct": 0.0, "months": 1}, {"id": "100640", "name": "POONAM KANOJIYA", "branch": "INH_JOS", "manager": "SHWETA", "status": "Active", "doj": "N/A", "target": 460000.0, "achieved": 95729.0, "pct": 20.8, "months": 2}, {"id": "100641", "name": "PURSHOTAM", "branch": "INH_DADAR", "manager": "SMITA", "status": "Active", "doj": "N/A", "target": 250000.0, "achieved": 23650.0, "pct": 9.5, "months": 1}, {"id": "100642", "name": "DIVYA MOHITE", "branch": "INH_JOS", "manager": "ADITI", "status": "Active", "doj": "08-Jan-2026", "target": 0.0, "achieved": 3583.0, "pct": 0, "months": 1}, {"id": "100642", "name": "DIVYA MOHITE", "branch": "INH_JOS", "manager": "OMKAR S", "status": "Inactive", "doj": "08-Jan-2026", "target": 4000000.0, "achieved": 47581.0, "pct": 1.2, "months": 20}, {"id": "100642", "name": "DIVYA MOHITE", "branch": "INH_JOS", "manager": "SHWETA", "status": "Active", "doj": "08-Jan-2026", "target": 260000.0, "achieved": 103403.0, "pct": 39.8, "months": 1}, {"id": "100646", "name": "DIVYA MOHITE", "branch": "INH_JOS", "manager": "ADITI", "status": "Active", "doj": "08-Jan-2026", "target": 220000.0, "achieved": 7200.0, "pct": 3.3, "months": 1}, {"id": "100965", "name": "LIDHIYA", "branch": "INH_JOS", "manager": "AMBUJ T", "status": "Inactive", "doj": "N/A", "target": 2000000.0, "achieved": 47811.0, "pct": 2.4, "months": 20}, {"id": "AG001", "name": "CREDIT TRIANGLE", "branch": "AGENCY", "manager": "POONAM INDULKAR", "status": "Active", "doj": "N/A", "target": 500000.0, "achieved": 337577.0, "pct": 67.5, "months": 1}, {"id": "AG001", "name": "CREDITTRAINGLE", "branch": "AGENCY", "manager": "POONAM", "status": "Active", "doj": "01-Jan-2024", "target": 1000000.0, "achieved": 785735.0, "pct": 78.6, "months": 1}, {"id": "AG001", "name": "Credittraingle", "branch": "AGENCY", "manager": "POONAM", "status": "Active", "doj": "01-Jan-2024", "target": 19600000.0, "achieved": 13618645.0, "pct": 69.5, "months": 21}, {"id": "AG002", "name": "SHETH", "branch": "AGENCY", "manager": "POONAM", "status": "Active", "doj": "01-Jan-2024", "target": 20200000.0, "achieved": 4008686.0, "pct": 19.8, "months": 22}, {"id": "AG002", "name": "SHETH ENTERPRISES", "branch": "AGENCY", "manager": "POONAM INDULKAR", "status": "Active", "doj": "N/A", "target": 1000000.0, "achieved": 610035.0, "pct": 61.0, "months": 1}, {"id": "AG003", "name": "SCUBE", "branch": "AGENCY", "manager": "POONAM", "status": "Active", "doj": "01-Jan-2024", "target": 2800000.0, "achieved": 792015.0, "pct": 28.3, "months": 22}, {"id": "AG003", "name": "SCUBE", "branch": "AGENCY", "manager": "POONAM INDULKAR", "status": "Active", "doj": "N/A", "target": 200000.0, "achieved": 218373.0, "pct": 109.2, "months": 1}, {"id": "AG004", "name": "KP", "branch": "AGENCY", "manager": "POONAM", "status": "Active", "doj": "01-Jan-2024", "target": 2200000.0, "achieved": 225356.0, "pct": 10.2, "months": 22}, {"id": "AG004", "name": "KP", "branch": "AGENCY", "manager": "POONAM INDULKAR", "status": "Active", "doj": "N/A", "target": 100000.0, "achieved": 211332.0, "pct": 211.3, "months": 1}, {"id": "AG005", "name": "ARIYOG", "branch": "AGENCY", "manager": "POONAM", "status": "Active", "doj": "01-Jan-2024", "target": 100000.0, "achieved": 0.0, "pct": 0.0, "months": 1}, {"id": "AG006", "name": "KAMAL INFINITY", "branch": "AGENCY", "manager": "POONAM", "status": "Active", "doj": "01-Jan-2024", "target": 0.0, "achieved": 8656.0, "pct": 0, "months": 1}, {"id": "AG006", "name": "KAMALINFINITY", "branch": "AGENCY", "manager": "POONAM INDULKAR", "status": "Active", "doj": "N/A", "target": 0.0, "achieved": 16543.0, "pct": 0, "months": 1}, {"id": "CS001", "name": "CUSTOMER SERVICE", "branch": "INH_JOS", "manager": "CUSTOMER SERVICE", "status": "Active", "doj": "01-Jan-2024", "target": 20400000.0, "achieved": 19349542.38, "pct": 94.9, "months": 23}], "branches": [{"branch": "INH_JOS", "target": 501355900.0, "achieved": 112994686.38, "pct": 22.5, "callers": 122}, {"branch": "AGENCY", "target": 168262000.0, "achieved": 33120309.0, "pct": 19.7, "callers": 10}, {"branch": "INH_DADAR", "target": 101350000.0, "achieved": 26444108.0, "pct": 26.1, "callers": 40}], "managers": [{"manager": "AMBUJ T", "target": 172714400.0, "achieved": 35159636.0, "pct": 20.4, "callers": 41}, {"manager": "SMITA", "target": 101350000.0, "achieved": 26444108.0, "pct": 26.1, "callers": 40}, {"manager": "POONAM", "target": 95962000.0, "achieved": 24557396.0, "pct": 25.6, "callers": 7}, {"manager": "CUSTOMER SERVICE", "target": 20400000.0, "achieved": 19349542.38, "pct": 94.9, "callers": 1}, {"manager": "ADITI", "target": 70697500.0, "achieved": 16034151.0, "pct": 22.7, "callers": 22}, {"manager": "OMKAR S", "target": 153915000.0, "achieved": 15677835.0, "pct": 10.2, "callers": 39}, {"manager": "SHRAVANTI", "target": 41830000.0, "achieved": 14306007.0, "pct": 34.2, "callers": 12}, {"manager": "SATISH P", "target": 70500000.0, "achieved": 7169053.0, "pct": 10.2, "callers": 2}, {"manager": "AMBUJ TRIPATHI", "target": 6394000.0, "achieved": 4770076.0, "pct": 74.6, "callers": 14}, {"manager": "SAROJ", "target": 19400000.0, "achieved": 3354892.0, "pct": 17.3, "callers": 1}, {"manager": "SHWETA", "target": 13061000.0, "achieved": 2614321.0, "pct": 20.0, "callers": 8}, {"manager": "OMKAR SINGH", "target": 2944000.0, "achieved": 1728226.0, "pct": 58.7, "callers": 12}, {"manager": "POONAM INDULKAR", "target": 1800000.0, "achieved": 1393860.0, "pct": 77.4, "callers": 6}], "top_performers": [{"id": "100411", "name": "SUHANI", "branch": "INH_JOS", "manager": "AMBUJ T", "status": "Active", "doj": "11-Nov-2024", "target": 3488000.0, "achieved": 4357242.0, "pct": 124.9, "months": 21}, {"id": "100611", "name": "ABHISHEK OVALE", "branch": "INH_JOS", "manager": "SHWETA", "status": "Active", "doj": "N/A", "target": 720000.0, "achieved": 688770.0, "pct": 95.7, "months": 3}, {"id": "CS001", "name": "CUSTOMER SERVICE", "branch": "INH_JOS", "manager": "CUSTOMER SERVICE", "status": "Active", "doj": "01-Jan-2024", "target": 20400000.0, "achieved": 19349542.38, "pct": 94.9, "months": 23}, {"id": "100476", "name": "PRIYA", "branch": "INH_JOS", "manager": "OMKAR SINGH", "status": "Active", "doj": "05-Dec-2025", "target": 704000.0, "achieved": 622429.0, "pct": 88.4, "months": 2}, {"id": "100493", "name": "NIDHI KADAM", "branch": "INH_DADAR", "manager": "SMITA", "status": "Active", "doj": "06-Jun-2025", "target": 3652000.0, "achieved": 3222061.0, "pct": 88.2, "months": 17}, {"id": "100410", "name": "VIDYA C", "branch": "INH_JOS", "manager": "AMBUJ T", "status": "Active", "doj": "11-Nov-2024", "target": 7561000.0, "achieved": 6273244.0, "pct": 83.0, "months": 21}, {"id": "100606", "name": "SAGAR GAONKAR", "branch": "INH_JOS", "manager": "SHWETA", "status": "Active", "doj": "05-Aug-2026", "target": 500000.0, "achieved": 397062.0, "pct": 79.4, "months": 2}, {"id": "100492", "name": "KALPITA RIKAME", "branch": "INH_DADAR", "manager": "SMITA", "status": "Active", "doj": "06-Apr-2025", "target": 4153000.0, "achieved": 3281395.0, "pct": 79.0, "months": 17}, {"id": "AG001", "name": "CREDITTRAINGLE", "branch": "AGENCY", "manager": "POONAM", "status": "Active", "doj": "01-Jan-2024", "target": 1000000.0, "achieved": 785735.0, "pct": 78.6, "months": 1}, {"id": "100481", "name": "SUHANA SHAIKH", "branch": "INH_DADAR", "manager": "SMITA", "status": "Active", "doj": "N/A", "target": 3594000.0, "achieved": 2790393.5, "pct": 77.6, "months": 17}], "trend": [{"label": "Nov '24", "target": 31272000.0, "achieved": 3065855.0}, {"label": "Dec '24", "target": 31272000.0, "achieved": 4241144.0}, {"label": "Jan '25", "target": 31272000.0, "achieved": 3596225.0}, {"label": "Feb '25", "target": 33042000.0, "achieved": 4107355.0}, {"label": "Mar '25", "target": 32896000.0, "achieved": 4410722.0}, {"label": "Apr '25", "target": 32956000.0, "achieved": 4549807.0}, {"label": "May '25", "target": 37568250.0, "achieved": 5978426.0}, {"label": "Jun '25", "target": 37274750.0, "achieved": 6205844.0}, {"label": "Jul '25", "target": 37937750.0, "achieved": 6058164.0}, {"label": "Aug '25", "target": 37347750.0, "achieved": 6757640.0}, {"label": "Sep '25", "target": 37338750.0, "achieved": 7423876.0}, {"label": "Oct '25", "target": 37495000.0, "achieved": 5351208.0}, {"label": "Nov '25", "target": 37714000.0, "achieved": 7645322.0}, {"label": "Dec '25", "target": 37278000.0, "achieved": 7989816.0}, {"label": "Jan '26", "target": 37328000.0, "achieved": 7954730.0}, {"label": "Feb '26", "target": 37329000.0, "achieved": 9444092.0}, {"label": "Mar '26", "target": 36538000.0, "achieved": 10514197.0}, {"label": "Apr '26", "target": 37318550.0, "achieved": 10827561.0}, {"label": "May '26", "target": 38038550.0, "achieved": 9073006.0}, {"label": "Jun '26", "target": 39086250.0, "achieved": 11345535.0}, {"label": "Jul '26", "target": 17471000.0, "achieved": 14275188.0}, {"label": "Aug '26", "target": 17693300.0, "achieved": 11432259.38}, {"label": "Sep '26", "target": 17501000.0, "achieved": 10311131.0}]};
+    let currentRole = 'admin';
+    let filteredCallersList = [...BUNDLE.callers];
+    let managerChartInstance = null;
     let trendChartInstance = null;
 
-    // Real-Time Broadcaster Channel (Instant tab/device synchronization)
-    const REALTIME_CHANNEL = new BroadcastChannel('shahfin_mgmt_live_sync');
-
-    // Listen for live updates broadcasted by Admin
-    REALTIME_CHANNEL.onmessage = (event) => {
-      if (event.data && event.data.type === 'DATA_UPDATED') {
-        // Update local memory
-        PORTAL_DATA = event.data.payload;
-        
-        // Save to browser persistent storage
-        localStorage.setItem('LIVE_CLOUD_VAULT', JSON.stringify(PORTAL_DATA));
-
-        // Show live notification banner to Senior Management
-        showLiveAlertBanner(event.data.message || 'Admin has updated caller collection numbers in real-time!');
-
-        // Re-render UI with new numbers
-        if (currentAuthRole) {
-          initializeDashboard();
-        }
-      }
+    const PASSWORDS = {
+      'admin': 'Admin@ShahFin2026',
+      'senior_management': 'Mgmt@ShahFin2026'
     };
-
-    function showLiveAlertBanner(msg) {
-      const banner = document.getElementById('liveAlertBanner');
-      const text = document.getElementById('liveAlertMessage');
-      text.textContent = msg;
-      banner.classList.remove('hidden');
-      setTimeout(() => {
-        banner.classList.add('hidden');
-      }, 6000);
-    }
 
     function formatINR(val) {
       if (!val || isNaN(val)) return '₹0';
       return '₹' + Number(val).toLocaleString('en-IN', { maximumFractionDigits: 0 });
     }
 
-    function switchLoginRole(role) {
-      selectedRole = role;
-      document.getElementById('loginError').classList.add('hidden');
-      document.getElementById('accessKeyInput').value = '';
+    function selectRole(role) {
+      currentRole = role;
+      document.getElementById('authErrorMsg').classList.add('hidden');
+      document.getElementById('authKeyInput').value = '';
 
       const btnAdmin = document.getElementById('tabAdmin');
       const btnMgmt = document.getElementById('tabMgmt');
-      const roleLabel = document.getElementById('roleLabel');
-      const btnText = document.getElementById('btnText');
+      const roleLabel = document.getElementById('roleLabelText');
+      const btnLabel = document.getElementById('authBtnLabel');
 
       if (role === 'admin') {
-        btnAdmin.className = "py-2.5 rounded-lg transition duration-200 flex items-center justify-center gap-1.5 bg-gradient-to-r from-sky-500 to-indigo-600 text-white shadow";
-        btnMgmt.className = "py-2.5 rounded-lg transition duration-200 flex items-center justify-center gap-1.5 text-slate-400 hover:text-white";
+        btnAdmin.className = "py-2.5 rounded-xl transition duration-200 flex items-center justify-center gap-2 bg-gradient-to-r from-amber-500 to-orange-600 text-white shadow-lg";
+        btnMgmt.className = "py-2.5 rounded-xl transition duration-200 flex items-center justify-center gap-2 text-slate-400 hover:text-white";
         roleLabel.textContent = "Admin Security Key";
-        btnText.textContent = "Unlock Admin Dashboard";
+        btnLabel.textContent = "Unlock Admin Portal";
       } else {
-        btnMgmt.className = "py-2.5 rounded-lg transition duration-200 flex items-center justify-center gap-1.5 bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow";
-        btnAdmin.className = "py-2.5 rounded-lg transition duration-200 flex items-center justify-center gap-1.5 text-slate-400 hover:text-white";
+        btnMgmt.className = "py-2.5 rounded-xl transition duration-200 flex items-center justify-center gap-2 bg-gradient-to-r from-amber-500 to-orange-600 text-white shadow-lg";
+        btnAdmin.className = "py-2.5 rounded-xl transition duration-200 flex items-center justify-center gap-2 text-slate-400 hover:text-white";
         roleLabel.textContent = "Senior Management Security Key";
-        btnText.textContent = "Unlock Management Portal";
+        btnLabel.textContent = "Unlock Management Portal";
       }
     }
 
-    function fillRolePass(role, pass) {
-      switchLoginRole(role);
-      document.getElementById('accessKeyInput').value = pass;
+    function quickFillPass(role, pass) {
+      selectRole(role);
+      document.getElementById('authKeyInput').value = pass;
     }
 
-    function togglePassVisibility() {
-      const input = document.getElementById('accessKeyInput');
-      const icon = document.getElementById('eyeIcon');
+    function togglePassEye() {
+      const input = document.getElementById('authKeyInput');
+      const eye = document.getElementById('authEye');
       if (input.type === 'password') {
         input.type = 'text';
-        icon.className = 'fa-regular fa-eye-slash text-xs';
+        eye.className = 'fa-regular fa-eye-slash text-sm';
       } else {
         input.type = 'password';
-        icon.className = 'fa-regular fa-eye text-xs';
+        eye.className = 'fa-regular fa-eye text-sm';
       }
     }
 
-    // Role Decryption
-    function decryptWithRole(roleId, key) {
-      try {
-        const roleConfig = DUAL_RBAC_VAULT.roles[roleId];
-        if (!roleConfig) return null;
-
-        const hash = CryptoJS.SHA256(key).toString();
-        if (hash !== roleConfig.hash) return null;
-
-        // Check if there is live updated data in local storage
-        const cachedLiveData = localStorage.getItem('LIVE_CLOUD_VAULT');
-        if (cachedLiveData) {
-          return JSON.parse(cachedLiveData);
-        }
-
-        // Unwrap Seed using role password
-        const rawWrapped = atob(roleConfig.wrapped);
-        let unwrappedSeed = '';
-        for (let i = 0; i < rawWrapped.length; i++) {
-          const charCode = rawWrapped.charCodeAt(i) ^ key.charCodeAt(i % key.length);
-          unwrappedSeed += String.fromCharCode(charCode);
-        }
-
-        // Decrypt vault data with unwrappedSeed
-        const rawVault = atob(DUAL_RBAC_VAULT.vault);
-        let decryptedStr = '';
-        for (let i = 0; i < rawVault.length; i++) {
-          const charCode = rawVault.charCodeAt(i) ^ unwrappedSeed.charCodeAt(i % unwrappedSeed.length);
-          decryptedStr += String.fromCharCode(charCode);
-        }
-
-        return JSON.parse(decryptedStr);
-      } catch (err) {
-        console.error("Auth / Decryption Error", err);
-        return null;
-      }
-    }
-
-    function handleUnlock(e) {
+    function handlePortalUnlock(e) {
       e.preventDefault();
-      const key = document.getElementById('accessKeyInput').value.trim();
+      const entered = document.getElementById('authKeyInput').value.trim();
 
-      const decrypted = decryptWithRole(selectedRole, key);
-      if (decrypted) {
-        PORTAL_DATA = decrypted;
-        currentAuthRole = selectedRole;
-
-        document.getElementById('loginError').classList.add('hidden');
+      if (entered === PASSWORDS[currentRole]) {
         document.getElementById('loginSection').classList.add('hidden');
         document.getElementById('dashboardSection').classList.remove('hidden');
 
-        // Configure Nav according to role
-        if (currentAuthRole === 'admin') {
-          document.getElementById('navRoleBadge').textContent = 'ADMIN CONTROL PORTAL';
-          document.getElementById('userRoleDisplay').textContent = 'System Super Admin';
-          document.getElementById('adminActionButtons').classList.remove('hidden');
+        // Setup headers according to role
+        if (currentRole === 'admin') {
+          document.getElementById('roleBadgeHeader').textContent = 'SUPER ADMIN';
+          document.getElementById('userDisplayTitle').textContent = 'System Super Admin';
         } else {
-          document.getElementById('navRoleBadge').textContent = 'SR. MANAGEMENT PORTAL';
-          document.getElementById('userRoleDisplay').textContent = 'Senior Management / Board';
-          document.getElementById('adminActionButtons').classList.add('hidden');
+          document.getElementById('roleBadgeHeader').textContent = 'SR. MANAGEMENT';
+          document.getElementById('userDisplayTitle').textContent = 'Senior Leadership Board';
         }
 
-        // Save session
-        sessionStorage.setItem('PORTAL_ROLE', currentAuthRole);
-        sessionStorage.setItem('PORTAL_KEY', key);
-
-        initializeDashboard();
+        sessionStorage.setItem('PORTAL_ACTIVE_ROLE', currentRole);
+        initializePortal();
       } else {
-        document.getElementById('errorMessageText').textContent = `Invalid Security Key for ${selectedRole === 'admin' ? 'Admin' : 'Senior Management'}!`;
-        document.getElementById('loginError').classList.remove('hidden');
+        document.getElementById('authErrorMsg').classList.remove('hidden');
       }
     }
 
-    function handleLogout() {
-      sessionStorage.removeItem('PORTAL_ROLE');
-      sessionStorage.removeItem('PORTAL_KEY');
-      PORTAL_DATA = null;
-      currentAuthRole = null;
-      document.getElementById('dashboardSection').classList.add('hidden');
-      document.getElementById('loginSection').classList.remove('hidden');
-      document.getElementById('accessKeyInput').value = '';
+    function handlePortalExit() {
+      sessionStorage.removeItem('PORTAL_ACTIVE_ROLE');
+      location.reload();
     }
 
-    // Auto restore session
+    // Check auto login
     window.addEventListener('DOMContentLoaded', () => {
-      const savedRole = sessionStorage.getItem('PORTAL_ROLE');
-      const savedKey = sessionStorage.getItem('PORTAL_KEY');
-      if (savedRole && savedKey) {
-        const decrypted = decryptWithRole(savedRole, savedKey);
-        if (decrypted) {
-          PORTAL_DATA = decrypted;
-          currentAuthRole = savedRole;
-          document.getElementById('loginSection').classList.add('hidden');
-          document.getElementById('dashboardSection').classList.remove('hidden');
-          if (currentAuthRole === 'admin') {
-            document.getElementById('navRoleBadge').textContent = 'ADMIN CONTROL PORTAL';
-            document.getElementById('userRoleDisplay').textContent = 'System Super Admin';
-            document.getElementById('adminActionButtons').classList.remove('hidden');
-          } else {
-            document.getElementById('navRoleBadge').textContent = 'SR. MANAGEMENT PORTAL';
-            document.getElementById('userRoleDisplay').textContent = 'Senior Management / Board';
-            document.getElementById('adminActionButtons').classList.add('hidden');
-          }
-          initializeDashboard();
+      const saved = sessionStorage.getItem('PORTAL_ACTIVE_ROLE');
+      if (saved && PASSWORDS[saved]) {
+        currentRole = saved;
+        document.getElementById('loginSection').classList.add('hidden');
+        document.getElementById('dashboardSection').classList.remove('hidden');
+        if (currentRole === 'admin') {
+          document.getElementById('roleBadgeHeader').textContent = 'SUPER ADMIN';
+          document.getElementById('userDisplayTitle').textContent = 'System Super Admin';
+        } else {
+          document.getElementById('roleBadgeHeader').textContent = 'SR. MANAGEMENT';
+          document.getElementById('userDisplayTitle').textContent = 'Senior Leadership Board';
         }
+        initializePortal();
       }
     });
 
-    // Initialize Dashboard
-    function initializeDashboard() {
-      if (!PORTAL_DATA) return;
-
-      document.getElementById('statTotalAchieved').textContent = formatINR(PORTAL_DATA.total_achieved);
-      document.getElementById('statTotalTarget').textContent = formatINR(PORTAL_DATA.total_target);
-      const overallPct = PORTAL_DATA.total_target > 0 
-        ? ((PORTAL_DATA.total_achieved / PORTAL_DATA.total_target) * 100).toFixed(1) 
-        : 0;
-      document.getElementById('statOverallPct').textContent = overallPct + '%';
-      document.getElementById('statProgressBar').style.width = Math.min(overallPct, 100) + '%';
-      
-      document.getElementById('statCallerCount').textContent = PORTAL_DATA.total_callers;
-      document.getElementById('statActiveCallers').textContent = PORTAL_DATA.active_callers;
-
-      // Populate Dropdowns
-      const branchSelect = document.getElementById('filterBranch');
-      branchSelect.innerHTML = '<option value="ALL">All Branches</option>';
-      PORTAL_DATA.branches.forEach(b => {
-        branchSelect.innerHTML += `<option value="${b}">${b}</option>`;
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.className = "tab-btn px-4 py-2.5 rounded-xl font-bold text-xs flex items-center gap-2 text-slate-600 hover:bg-slate-100 transition";
       });
 
-      const mgrSelect = document.getElementById('filterManager');
-      mgrSelect.innerHTML = '<option value="ALL">All Managers</option>';
-      PORTAL_DATA.managers.forEach(m => {
-        mgrSelect.innerHTML += `<option value="${m}">${m}</option>`;
-      });
-
-      applyFilters();
-    }
-
-    function applyFilters() {
-      const search = document.getElementById('searchCaller').value.toLowerCase().trim();
-      const branch = document.getElementById('filterBranch').value;
-      const manager = document.getElementById('filterManager').value;
-      const status = document.getElementById('filterStatus').value;
-
-      filteredCallers = PORTAL_DATA.callers.filter(c => {
-        const matchSearch = (!search) || 
-          c['Employee Name'].toLowerCase().includes(search) || 
-          String(c['Employee ID']).toLowerCase().includes(search);
-        
-        const matchBranch = (branch === 'ALL') || (c['BRANCH'] === branch);
-        const matchManager = (manager === 'ALL') || (c['Manager Name'] === manager);
-        const matchStatus = (status === 'ALL') || (c['Status'] === status);
-
-        return matchSearch && matchBranch && matchManager && matchStatus;
-      });
-
-      filteredCallers.sort((a, b) => b.total_achieved - a.total_achieved);
-      renderCallerTable();
-    }
-
-    function renderCallerTable() {
-      const tbody = document.getElementById('callerTableBody');
-      tbody.innerHTML = '';
-      document.getElementById('callerResultsCount').textContent = `Showing ${filteredCallers.length} Callers`;
-
-      if (filteredCallers.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="9" class="text-center py-8 text-slate-400">No caller records matched the filter criteria.</td></tr>`;
-        return;
+      document.getElementById(tabId).classList.remove('hidden');
+      const activeBtn = document.getElementById('tabBtn-' + tabId.replace('tab-', ''));
+      if (activeBtn) {
+        activeBtn.className = "tab-btn px-4 py-2.5 rounded-xl font-bold text-xs flex items-center gap-2 bg-gradient-to-r from-amber-500 to-orange-600 text-white shadow-md transition";
       }
+    }
 
-      filteredCallers.forEach(c => {
-        const statusBadge = c.Status === 'Active'
-          ? `<span class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded text-[10px] font-semibold">Active</span>`
-          : `<span class="bg-slate-100 text-slate-500 border border-slate-200 px-2 py-0.5 rounded text-[10px] font-medium">Inactive</span>`;
+    // Initialize Dashboard
+    function initializePortal() {
+      // Update Top KPIs
+      document.getElementById('statHeroTarget').textContent = formatINR(BUNDLE.summary.total_target);
+      document.getElementById('statHeroCollection').textContent = formatINR(BUNDLE.summary.total_achieved);
+      document.getElementById('statHeroPct').textContent = BUNDLE.summary.overall_pct + '%';
+      document.getElementById('statHeroBalance').textContent = formatINR(BUNDLE.summary.balance);
 
-        let pctColor = 'text-slate-700';
-        let barColor = 'bg-sky-500';
-        if (c.ach_pct >= 80) { pctColor = 'text-emerald-600 font-bold'; barColor = 'bg-emerald-500'; }
-        else if (c.ach_pct < 40) { pctColor = 'text-rose-600 font-medium'; barColor = 'bg-rose-500'; }
+      document.getElementById('tickerCollection').textContent = formatINR(BUNDLE.summary.total_achieved);
+      document.getElementById('tickerPace').textContent = BUNDLE.summary.overall_pct + '%';
+      document.getElementById('tickerGap').textContent = formatINR(BUNDLE.summary.balance);
 
-        // Action buttons (Admin has Edit option, Management has View history)
-        let actionButtons = `
-          <button onclick="event.stopPropagation(); openCallerModal('${c['Employee ID']}')" 
-            class="px-2 py-1 bg-sky-50 text-sky-600 hover:bg-sky-600 hover:text-white rounded text-[11px] font-medium border border-sky-200 transition">
-            History
-          </button>
-        `;
+      // Render Branch Cards
+      renderBranchCards();
+      // Render Charts
+      renderManagerChart();
+      renderTrendChart();
+      // Render Callers
+      renderCallerDropdowns();
+      filterCallers();
+      // Render Managers Tab
+      renderManagerCards();
+      // Render Top Performers
+      renderTopPerformers();
+    }
 
-        if (currentAuthRole === 'admin') {
-          actionButtons += `
-            <button onclick="event.stopPropagation(); openAdminEditModal('${c['Employee ID']}')" 
-              class="ml-1 px-2 py-1 bg-amber-50 text-amber-700 hover:bg-amber-600 hover:text-white rounded text-[11px] font-medium border border-amber-200 transition" title="Admin Edit">
-              <i class="fa-solid fa-pen text-[10px]"></i> Edit
-            </button>
-          `;
-        }
+    function renderBranchCards() {
+      const container = document.getElementById('branchListContainer');
+      container.innerHTML = '';
 
-        const tr = document.createElement('tr');
-        tr.className = "hover:bg-sky-50/50 transition cursor-pointer border-b border-slate-100";
-        tr.onclick = () => openCallerModal(c['Employee ID']);
-
-        tr.innerHTML = `
-          <td class="py-3 px-4 font-mono font-bold text-slate-600">${c['Employee ID']}</td>
-          <td class="py-3 px-4">
-            <div class="font-bold text-slate-900">${c['Employee Name']}</div>
-            <div class="text-[10px] text-slate-400">${c.active_months} months active</div>
-          </td>
-          <td class="py-3 px-4 font-medium text-slate-600">
-            <i class="fa-regular fa-calendar-days text-slate-400 mr-1"></i>${c['Joining date']}
-          </td>
-          <td class="py-3 px-4">
-            <span class="font-semibold text-slate-800">${c['BRANCH']}</span>
-            <div class="text-[10px] text-slate-400">TL: ${c['Manager Name']}</div>
-          </td>
-          <td class="py-3 px-4">${statusBadge}</td>
-          <td class="py-3 px-4 text-right font-medium text-slate-600">${formatINR(c.total_target)}</td>
-          <td class="py-3 px-4 text-right font-bold text-slate-900">${formatINR(c.total_achieved)}</td>
-          <td class="py-3 px-4 text-center">
-            <div class="flex items-center justify-center gap-2">
-              <span class="${pctColor}">${c.ach_pct}%</span>
-              <div class="w-12 bg-slate-200 rounded-full h-1.5 overflow-hidden hidden sm:block">
-                <div class="${barColor} h-1.5 rounded-full" style="width: ${Math.min(c.ach_pct, 100)}%"></div>
+      BUNDLE.branches.forEach(b => {
+        container.innerHTML += `
+          <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between">
+            <div>
+              <div class="font-extrabold text-slate-800 text-xs flex items-center gap-1.5">
+                <i class="fa-solid fa-building text-amber-500 text-[11px]"></i> ${b.branch}
+              </div>
+              <div class="text-[11px] text-slate-500 mt-0.5">
+                Total: <strong class="text-emerald-700">${formatINR(b.achieved)}</strong> / ${formatINR(b.target)}
               </div>
             </div>
-          </td>
-          <td class="py-3 px-4 text-center whitespace-nowrap">
-            ${actionButtons}
-          </td>
+            <div class="text-right">
+              <span class="font-black text-xs ${b.pct >= 20 ? 'text-emerald-600' : 'text-amber-600'}">${b.pct}%</span>
+              <div class="w-16 bg-slate-200 h-1.5 rounded-full overflow-hidden mt-1">
+                <div class="bg-amber-500 h-1.5 rounded-full" style="width: ${Math.min(b.pct, 100)}%"></div>
+              </div>
+            </div>
+          </div>
         `;
-        tbody.appendChild(tr);
       });
     }
 
-    // Modal Details Drilldown
-    function openCallerModal(empId) {
-      const caller = PORTAL_DATA.callers.find(c => String(c['Employee ID']) === String(empId));
-      if (!caller) return;
+    function renderManagerChart() {
+      const ctx = document.getElementById('managerBarChart').getContext('2d');
+      if (managerChartInstance) managerChartInstance.destroy();
 
-      document.getElementById('modalCallerName').textContent = caller['Employee Name'];
-      document.getElementById('modalCallerEmpId').textContent = caller['Employee ID'];
-      document.getElementById('modalCallerStatus').textContent = caller['Status'];
-      document.getElementById('modalCallerMeta').textContent = `Branch: ${caller['BRANCH']} | Manager: ${caller['Manager Name']} | Joined: ${caller['Joining date']}`;
+      const labels = BUNDLE.managers.slice(0, 8).map(m => m.manager);
+      const achieved = BUNDLE.managers.slice(0, 8).map(m => m.achieved / 100000);
+      const target = BUNDLE.managers.slice(0, 8).map(m => m.target / 100000);
 
-      document.getElementById('modalTotalTarget').textContent = formatINR(caller.total_target);
-      document.getElementById('modalTotalAchieved').textContent = formatINR(caller.total_achieved);
-      document.getElementById('modalAchPct').textContent = caller.ach_pct + '%';
-
-      const monthlyRows = PORTAL_DATA.monthly.filter(m => String(m.emp_id) === String(empId));
-
-      const modalTbody = document.getElementById('modalTableBody');
-      modalTbody.innerHTML = '';
-
-      const chartLabels = [];
-      const chartAchieved = [];
-      const chartTargets = [];
-
-      monthlyRows.forEach(row => {
-        chartLabels.push(`${row.month} '${String(row.year).slice(-2)}`);
-        chartAchieved.push(row.achieved);
-        chartTargets.push(row.target);
-
-        let badge = '<span class="text-slate-400">Average</span>';
-        if (row.ach_pct >= 90) badge = '<span class="text-emerald-600 font-bold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">Star Performer</span>';
-        else if (row.ach_pct >= 60) badge = '<span class="text-sky-600 font-semibold bg-sky-50 px-2 py-0.5 rounded border border-sky-200">Good</span>';
-        else if (row.ach_pct < 30) badge = '<span class="text-rose-600 font-medium bg-rose-50 px-2 py-0.5 rounded border border-rose-200">Needs Review</span>';
-
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td class="py-2.5 px-4 font-semibold text-slate-800">${row.month} ${row.year}</td>
-          <td class="py-2.5 px-4 text-right font-medium text-slate-600">${formatINR(row.target)}</td>
-          <td class="py-2.5 px-4 text-right font-bold text-slate-900">${formatINR(row.achieved)}</td>
-          <td class="py-2.5 px-4 text-center font-bold ${row.ach_pct >= 80 ? 'text-emerald-600' : 'text-slate-700'}">${row.ach_pct}%</td>
-          <td class="py-2.5 px-4 text-center">${badge}</td>
-        `;
-        modalTbody.appendChild(tr);
-      });
-
-      renderModalChart(chartLabels, chartAchieved, chartTargets);
-      document.getElementById('callerModal').classList.remove('hidden');
-    }
-
-    function closeModal() {
-      document.getElementById('callerModal').classList.add('hidden');
-    }
-
-    function renderModalChart(labels, achieved, targets) {
-      const ctx = document.getElementById('monthlyTrendChart').getContext('2d');
-      if (trendChartInstance) trendChartInstance.destroy();
-
-      trendChartInstance = new Chart(ctx, {
+      managerChartInstance = new Chart(ctx, {
         type: 'bar',
         data: {
           labels: labels,
           datasets: [
             {
-              label: 'Achieved Collection (₹)',
+              label: 'Achieved (Lakhs)',
               data: achieved,
-              backgroundColor: 'rgba(16, 185, 129, 0.8)',
-              borderRadius: 4,
+              backgroundColor: '#ea580c',
+              borderRadius: 4
             },
             {
-              label: 'Assigned Target (₹)',
-              data: targets,
-              backgroundColor: 'rgba(2, 132, 199, 0.25)',
-              borderColor: 'rgba(2, 132, 199, 0.8)',
-              borderWidth: 1,
-              borderRadius: 4,
+              label: 'Target (Lakhs)',
+              data: target,
+              backgroundColor: '#e2e8f0',
+              borderRadius: 4
             }
           ]
         },
@@ -901,132 +601,169 @@
           responsive: true,
           maintainAspectRatio: false,
           plugins: {
-            legend: { position: 'top', labels: { boxWidth: 12, font: { size: 10 } } }
+            legend: { position: 'top', labels: { boxWidth: 10, font: { size: 10 } } }
           },
           scales: {
-            y: {
-              beginAtZero: true,
-              ticks: {
-                callback: function(val) { return '₹' + (val / 1000) + 'k'; },
-                font: { size: 10 }
-              }
-            },
-            x: { ticks: { font: { size: 10 } } }
+            y: { ticks: { callback: val => '₹' + val + 'L', font: { size: 9 } } },
+            x: { ticks: { font: { size: 9 } } }
           }
         }
       });
     }
 
-    // ==========================================
-    // ADMIN FUNCTIONS: REAL-TIME BROADCAST
-    // ==========================================
-    function openAdminEditModal(empId) {
-      const caller = PORTAL_DATA.callers.find(c => String(c['Employee ID']) === String(empId));
-      if (!caller) return;
+    function renderTrendChart() {
+      const ctx = document.getElementById('trendLineChart').getContext('2d');
+      if (trendChartInstance) trendChartInstance.destroy();
 
-      document.getElementById('editEmpId').value = caller['Employee ID'];
-      document.getElementById('editCallerName').value = caller['Employee Name'];
-      document.getElementById('editCallerBranch').value = caller['BRANCH'];
-      document.getElementById('editCallerManager').value = caller['Manager Name'];
-      document.getElementById('editCallerTarget').value = caller['total_target'];
-      document.getElementById('editCallerAchieved').value = caller['total_achieved'];
-      document.getElementById('editCallerStatus').value = caller['Status'];
+      const labels = BUNDLE.trend.map(t => t.label);
+      const achieved = BUNDLE.trend.map(t => t.achieved / 100000);
+      const target = BUNDLE.trend.map(t => t.target / 100000);
 
-      document.getElementById('adminEditModal').classList.remove('hidden');
+      trendChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: 'Collected (₹ Lakhs)',
+              data: achieved,
+              borderColor: '#10b981',
+              backgroundColor: 'rgba(16, 185, 129, 0.1)',
+              fill: true,
+              tension: 0.3
+            },
+            {
+              label: 'Target (₹ Lakhs)',
+              data: target,
+              borderColor: '#f59e0b',
+              borderDash: [5, 5],
+              tension: 0.3
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'top', labels: { boxWidth: 10, font: { size: 10 } } }
+          },
+          scales: {
+            y: { ticks: { callback: val => '₹' + val + 'L', font: { size: 9 } } },
+            x: { ticks: { font: { size: 9 } } }
+          }
+        }
+      });
     }
 
-    function closeEditModal() {
-      document.getElementById('adminEditModal').classList.add('hidden');
+    function renderCallerDropdowns() {
+      const branchSel = document.getElementById('branchFilter');
+      branchSel.innerHTML = '<option value="ALL">All Branches</option>';
+      BUNDLE.branches.forEach(b => {
+        branchSel.innerHTML += `<option value="${b.branch}">${b.branch}</option>`;
+      });
     }
 
-    function handleSaveCallerUpdate(e) {
-      e.preventDefault();
-      const empId = document.getElementById('editEmpId').value;
-      const caller = PORTAL_DATA.callers.find(c => String(c['Employee ID']) === String(empId));
-      if (!caller) return;
+    function filterCallers() {
+      const query = document.getElementById('callerSearchInput').value.toLowerCase().trim();
+      const branch = document.getElementById('branchFilter').value;
+      const status = document.getElementById('statusFilter').value;
 
-      const newTarget = parseFloat(document.getElementById('editCallerTarget').value) || 0;
-      const newAchieved = parseFloat(document.getElementById('editCallerAchieved').value) || 0;
-
-      caller['BRANCH'] = document.getElementById('editCallerBranch').value.trim();
-      caller['Manager Name'] = document.getElementById('editCallerManager').value.trim();
-      caller['total_target'] = newTarget;
-      caller['total_achieved'] = newAchieved;
-      caller['Status'] = document.getElementById('editCallerStatus').value;
-      caller['ach_pct'] = newTarget > 0 ? Number(((newAchieved / newTarget) * 100).toFixed(1)) : 0;
-
-      // Recalculate Totals
-      PORTAL_DATA.total_target = PORTAL_DATA.callers.reduce((sum, c) => sum + (c.total_target || 0), 0);
-      PORTAL_DATA.total_achieved = PORTAL_DATA.callers.reduce((sum, c) => sum + (c.total_achieved || 0), 0);
-      PORTAL_DATA.active_callers = PORTAL_DATA.callers.filter(c => c.Status === 'Active').length;
-
-      // Save to LocalStorage
-      localStorage.setItem('LIVE_CLOUD_VAULT', JSON.stringify(PORTAL_DATA));
-
-      // Broadcast Real-time event across all open senior management screens
-      REALTIME_CHANNEL.postMessage({
-        type: 'DATA_UPDATED',
-        payload: PORTAL_DATA,
-        message: `Admin updated ${caller['Employee Name']} (Target: ₹${newTarget}, Achieved: ₹${newAchieved})`
+      filteredCallersList = BUNDLE.callers.filter(c => {
+        const matchQ = (!query) || c.name.toLowerCase().includes(query) || c.id.toLowerCase().includes(query);
+        const matchB = (branch === 'ALL') || (c.branch === branch);
+        const matchS = (status === 'ALL') || (c.status === status);
+        return matchQ && matchB && matchS;
       });
 
-      closeEditModal();
-      initializeDashboard();
-      alert(`Changes saved & live-broadcasted to all Senior Management devices!`);
+      filteredCallersList.sort((a, b) => b.achieved - a.achieved);
+
+      const tbody = document.getElementById('callerTableBody');
+      tbody.innerHTML = '';
+
+      if (filteredCallersList.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" class="text-center py-8 text-slate-400">No caller records matched.</td></tr>';
+        return;
+      }
+
+      filteredCallersList.forEach(c => {
+        const statusBadge = c.status === 'Active'
+          ? '<span class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded text-[10px] font-bold">Active</span>'
+          : '<span class="bg-slate-100 text-slate-500 border border-slate-200 px-2 py-0.5 rounded text-[10px] font-medium">Inactive</span>';
+
+        tbody.innerHTML += `
+          <tr class="hover:bg-amber-50/40 transition border-b border-slate-100">
+            <td class="py-3 px-4 font-mono font-bold text-slate-600">${c.id}</td>
+            <td class="py-3 px-4 font-extrabold text-slate-900">${c.name}</td>
+            <td class="py-3 px-4 font-medium text-slate-600">${c.doj}</td>
+            <td class="py-3 px-4">
+              <span class="font-bold text-slate-800">${c.branch}</span>
+              <div class="text-[10px] text-slate-400">TL: ${c.manager}</div>
+            </td>
+            <td class="py-3 px-4 text-center">${statusBadge}</td>
+            <td class="py-3 px-4 text-right font-medium text-slate-600">${formatINR(c.target)}</td>
+            <td class="py-3 px-4 text-right font-extrabold text-slate-900">${formatINR(c.achieved)}</td>
+            <td class="py-3 px-4 text-center font-bold ${c.pct >= 50 ? 'text-emerald-600' : 'text-slate-700'}">${c.pct}%</td>
+          </tr>
+        `;
+      });
     }
 
-    function openBulkUpdateModal() {
-      document.getElementById('bulkUploadModal').classList.remove('hidden');
+    function renderManagerCards() {
+      const container = document.getElementById('managerCardsContainer');
+      container.innerHTML = '';
+
+      BUNDLE.managers.forEach(m => {
+        container.innerHTML += `
+          <div class="bg-white rounded-2xl border border-slate-200 p-5 glow-card">
+            <div class="flex items-center justify-between mb-2">
+              <h4 class="font-black text-slate-900 text-sm">${m.manager}</h4>
+              <span class="text-xs font-bold px-2 py-0.5 bg-amber-50 text-amber-700 rounded-lg border border-amber-200">${m.pct}% Achieved</span>
+            </div>
+            <div class="space-y-1 text-xs text-slate-600 mt-3">
+              <div class="flex justify-between"><span>Recovered:</span> <strong class="text-emerald-600">${formatINR(m.achieved)}</strong></div>
+              <div class="flex justify-between"><span>Target:</span> <strong>${formatINR(m.target)}</strong></div>
+              <div class="flex justify-between"><span>Callers in Team:</span> <strong>${m.callers} Callers</strong></div>
+            </div>
+          </div>
+        `;
+      });
     }
 
-    function closeBulkModal() {
-      document.getElementById('bulkUploadModal').classList.add('hidden');
+    function renderTopPerformers() {
+      const tbody = document.getElementById('topPerformersBody');
+      tbody.innerHTML = '';
+
+      BUNDLE.top_performers.forEach((p, idx) => {
+        let medal = `<span class="font-bold text-slate-400">#${idx+1}</span>`;
+        if (idx === 0) medal = '<span class="text-amber-500 font-black text-sm">🥇 #1</span>';
+        else if (idx === 1) medal = '<span class="text-slate-400 font-black text-sm">🥈 #2</span>';
+        else if (idx === 2) medal = '<span class="text-amber-700 font-black text-sm">🥉 #3</span>';
+
+        tbody.innerHTML += `
+          <tr class="border-b border-slate-100 hover:bg-amber-50/40">
+            <td class="py-3 px-4">${medal}</td>
+            <td class="py-3 px-4 font-black text-slate-900">${p.name} <span class="font-mono text-slate-400 text-[10px]">(${p.id})</span></td>
+            <td class="py-3 px-4 text-slate-600 font-medium">${p.manager}</td>
+            <td class="py-3 px-4 text-right font-medium">${formatINR(p.target)}</td>
+            <td class="py-3 px-4 text-right font-black text-emerald-600">${formatINR(p.achieved)}</td>
+            <td class="py-3 px-4 text-center font-black text-amber-600">${p.pct}%</td>
+          </tr>
+        `;
+      });
     }
 
-    function handleExcelUpload(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        const data = new Uint8Array(e.target.result);
-        const workbook = XLSX.read(data, { type: 'array' });
-        const firstSheet = workbook.SheetNames[0];
-        const rows = XLSX.utils.sheet_to_json(workbook.Sheets[firstSheet]);
-
-        if (rows && rows.length > 0) {
-          // Process excel rows into portal format
-          document.getElementById('uploadFeedbackText').textContent = `Successfully parsed ${rows.length} rows! Broadcasting to all seniors...`;
-          document.getElementById('uploadFeedback').classList.remove('hidden');
-
-          // Broadcast to all devices
-          REALTIME_CHANNEL.postMessage({
-            type: 'DATA_UPDATED',
-            payload: PORTAL_DATA,
-            message: `Admin uploaded new bulk collection file with ${rows.length} records!`
-          });
-
-          setTimeout(() => {
-            closeBulkModal();
-            initializeDashboard();
-          }, 1500);
-        }
-      };
-      reader.readAsArrayBuffer(file);
-    }
-
-    function exportToCSV() {
-      if (!filteredCallers.length) return;
-      let csv = 'Emp Code,Caller Name,Joining Date,Branch,Manager,Status,Lifetime Target,Lifetime Achieved,Achievement %\n';
-      filteredCallers.forEach(c => {
-        csv += `"${c['Employee ID']}","${c['Employee Name']}","${c['Joining date']}","${c['BRANCH']}","${c['Manager Name']}","${c['Status']}",${c.total_target},${c.total_achieved},${c.ach_pct}%\n`;
+    function exportCSV() {
+      if (!filteredCallersList.length) return;
+      let csv = 'Emp Code,Caller Name,DOJ,Branch,Manager,Status,Lifetime Target,Total Recovered,Achieved %\n';
+      filteredCallersList.forEach(c => {
+        csv += `"${c.id}","${c.name}","${c.doj}","${c.branch}","${c.manager}","${c.status}",${c.target},${c.achieved},${c.pct}%\n`;
       });
 
       const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
       const link = document.createElement("a");
       const url = URL.createObjectURL(blob);
       link.setAttribute("href", url);
-      link.setAttribute("download", `Executive_Collection_Summary_${new Date().toISOString().slice(0,10)}.csv`);
+      link.setAttribute("download", `Shah_Finlease_Collection_${new Date().toISOString().slice(0,10)}.csv`);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
